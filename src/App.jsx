@@ -12,6 +12,7 @@ import MySongs from './pages/MySongs';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import UserSongs from './pages/UserSongs';
+import Trending from './pages/Trending';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -40,6 +41,7 @@ function App() {
           <div className="logo">🎵 My Music App</div>
           <nav className="nav-links">
             <Link to="/">Home</Link>
+            <Link to="/trending">Trending</Link> 
             <Link to="/about">About</Link>
             <Link to="/my-profile">My Profile</Link>
           </nav>
@@ -50,6 +52,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/user/:username" element={<UserSongs />} />
+            <Route path="/trending" element={<Trending />} />
             <Route
               path="/my-profile"
               element={<MyProfile session={session} />}
