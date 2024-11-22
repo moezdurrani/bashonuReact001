@@ -9,6 +9,8 @@ function MyProfile({ session }) {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [username, setUsername] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [isEditing, setIsEditing] = useState(false); // Toggle editing mode
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -26,6 +28,7 @@ function MyProfile({ session }) {
           console.error('Error fetching username:', error.message);
         } else {
           setUsername(data?.username || 'No username set');
+          setNewUsername(data?.username || ''); // Initialize newUsername
         }
       }
       setLoading(false);
@@ -45,6 +48,32 @@ function MyProfile({ session }) {
     }
   };
 
+  const updateUsername = async () => {
+    if (!newUsername.trim()) {
+      setMessage('Username cannot be empty.');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ username: newUsername })
+        .eq('id', session.user.id);
+
+      if (error) {
+        console.error('Error updating username:', error.message);
+        setMessage('Error updating username.');
+      } else {
+        setUsername(newUsername); // Update the displayed username
+        setIsEditing(false); // Exit editing mode
+        setMessage('Username updated successfully!');
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err.message);
+      setMessage('Unexpected error occurred.');
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -57,14 +86,30 @@ function MyProfile({ session }) {
       ) : (
         <div>
           <h1>Welcome, {user.email}</h1>
-          <p><strong>Username:</strong> {username}</p>
+          <p>
+            <strong>Username:</strong>{' '}
+            {!isEditing ? (
+              <>
+                {username}{' '}
+                <button onClick={() => setIsEditing(true)}>Edit Username</button>
+              </>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                />
+                <button onClick={updateUsername}>Save</button>
+                <button onClick={() => setIsEditing(false)}>Cancel</button>
+              </div>
+            )}
+          </p>
           <div style={{ marginBottom: '20px' }}>
             <Link to="/my-songs" style={{ marginRight: '10px' }}>
               View My Songs
             </Link>
-            <Link to="/create-song">
-              Create a Song
-            </Link>
+            <Link to="/create-song">Create a Song</Link>
           </div>
           <button onClick={handleLogout}>Logout</button>
           <p>{message}</p>
