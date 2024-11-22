@@ -11,6 +11,7 @@ import CreateSong from './pages/CreateSong';
 import MySongs from './pages/MySongs'; 
 import About from './pages/About';
 import Contact from './pages/Contact';
+import UserSongs from './pages/UserSongs';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/my-songs" element={<MySongs />} /> {/* Route for My Songs */}
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/user/:username" element={<UserSongs />} />
               </Routes>
             </main>
           </>
