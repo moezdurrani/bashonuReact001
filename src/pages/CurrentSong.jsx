@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 function CurrentSong() {
   const { id } = useParams(); // Get the song ID from the URL
+  const navigate = useNavigate(); // Add navigate hook
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
@@ -167,7 +168,19 @@ function CurrentSong() {
       <h1>{song.title}</h1>
       <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
       <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
-      <p><strong>Username:</strong> {song.user_profiles?.username || 'Unknown'}</p>
+      <p>
+        <strong>Posted by:</strong>{' '}
+        <span
+          onClick={() =>
+            song?.user_profiles?.username
+              ? navigate(`/user/${song.user_profiles.username}`)
+              : console.log('Username not found')
+          }
+          style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
+        >
+          {song.user_profiles?.username || 'Unknown'}
+        </span>
+      </p>
       <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>
       <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>
       <p><strong>Likes:</strong> {song.likes}</p>
