@@ -6,9 +6,15 @@ function CurrentSong() {
   const { id } = useParams(); // Get the song ID from the URL
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false); // Track if the user has liked the song
-  const [comment, setComment] = useState(''); // Track the new comment input
+  const [liked, setLiked] = useState(false);
+  const [editing, setEditing] = useState(false); // Toggle editing mode
+  const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
+
+  // Edit Song Fields
+  const [title, setTitle] = useState('');
+  const [khowarLyrics, setKhowarLyrics] = useState('');
+  const [englishLyrics, setEnglishLyrics] = useState('');
 
   const fetchSong = async () => {
     setLoading(true);
@@ -24,6 +30,9 @@ function CurrentSong() {
       console.error('Error fetching song:', error);
     } else {
       setSong(songData);
+      setTitle(songData.title);
+      setKhowarLyrics(songData.khowar_lyrics);
+      setEnglishLyrics(songData.english_lyrics);
 
       // Check if the user has already liked the song
       const {
@@ -115,7 +124,6 @@ function CurrentSong() {
     }
 
     try {
-      // Add the comment to the comments array
       const { error: commentError } = await supabase
         .from('songs')
         .update({
@@ -127,9 +135,9 @@ function CurrentSong() {
 
       setSong({
         ...song,
-        comments: [...(song.comments || []), comment], // Update local state
+        comments: [...(song.comments || []), comment],
       });
-      setComment(''); // Clear the input
+      setComment('');
       setMessage('Comment added successfully!');
     } catch (error) {
       setMessage('Error adding comment: ' + error.message);
@@ -149,10 +157,33 @@ function CurrentSong() {
 
       if (deleteError) throw deleteError;
 
-      setSong({ ...song, comments: updatedComments }); // Update local state
+      setSong({ ...song, comments: updatedComments });
       setMessage('Comment deleted successfully!');
     } catch (error) {
       setMessage('Error deleting comment: ' + error.message);
+    }
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { error } = await supabase
+        .from('songs')
+        .update({
+          title,
+          khowar_lyrics: khowarLyrics,
+          english_lyrics: englishLyrics,
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setSong({ ...song, title, khowar_lyrics: khowarLyrics, english_lyrics: englishLyrics });
+      setEditing(false); // Exit editing mode
+      setMessage('Song updated successfully!');
+    } catch (error) {
+      setMessage('Error updating song: ' + error.message);
     }
   };
 
@@ -195,7 +226,35 @@ function CurrentSong() {
         <button onClick={handleComment}>Add Comment</button>
       </div>
 
-      {/* Message */}
+      {/* Edit Song Button */}
+      {!editing && (
+        <button onClick={() => setEditing(true)}>Edit Song</button>
+      )}
+
+      {/* Edit Song Form */}
+      {editing && (
+        <form onSubmit={handleEdit}>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <textarea
+            value={khowarLyrics}
+            onChange={(e) => setKhowarLyrics(e.target.value)}
+            required
+          />
+          <textarea
+            value={englishLyrics}
+            onChange={(e) => setEnglishLyrics(e.target.value)}
+            required
+          />
+          <button type="submit">Save Changes</button>
+          <button type="button" onClick={() => setEditing(false)}>Cancel</button>
+        </form>
+      )}
+
       {message && <p>{message}</p>}
     </div>
   );
