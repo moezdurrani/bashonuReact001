@@ -66,3 +66,47 @@ h2 {
   margin: 0;
   color: #555;
 }
+
+input {
+  display: block;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  margin: 0.5rem 0.5rem 0 0;
+  padding: 0.5rem 1rem;
+  background-color: #282c34;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #61dafb;
+}
+
+p {
+  font-size: 1rem;
+}
+
+
+.logout-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  text-decoration: underline;
+}
+
+.logout-button:hover {
+  color: #61dafb;
+}
+
