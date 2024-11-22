@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { supabase } from '../supabaseClient';
 
 function CurrentSong() {
   const { id } = useParams(); // Get the song ID from the URL
+  const navigate = useNavigate(); // Initialize useNavigate
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState(null); // Logged-in user ID
-  const [username, setUsername] = useState('');
 
   // Edit Song Fields
   const [title, setTitle] = useState('');
@@ -19,12 +19,12 @@ function CurrentSong() {
 
   const fetchSong = async () => {
     setLoading(true);
-  
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
       setUserId(user?.id);
-  
+
       // Fetch song details with proper relationships
       const { data: songData, error } = await supabase
         .from('songs')
@@ -41,7 +41,7 @@ function CurrentSong() {
         `)
         .eq('id', id)
         .single();
-  
+
       if (error) {
         console.error('Error fetching song:', error.message);
         setSong(null);
@@ -52,11 +52,9 @@ function CurrentSong() {
     } catch (error) {
       console.error('Unexpected error:', error.message);
     }
-  
+
     setLoading(false);
   };
-  
-  
 
   const handleLikeToggle = async () => {
     if (!userId) {
@@ -135,7 +133,19 @@ function CurrentSong() {
       <h1>{song.title}</h1>
       <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
       <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
-      <p><strong>Username:</strong>{song.user_profiles?.username || 'Unknown'}</p>
+      <p>
+        <strong>Posted by:</strong>{' '}
+        <span
+          onClick={() =>
+            song?.user_profiles?.username
+              ? navigate(`/user/${song.user_profiles.username}`)
+              : console.log('Username not found')
+          }
+          style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
+        >
+          {song.user_profiles?.username || 'Unknown'}
+        </span>
+      </p>
       <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>
       <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>
       <p><strong>Likes:</strong> {song.likes}</p>

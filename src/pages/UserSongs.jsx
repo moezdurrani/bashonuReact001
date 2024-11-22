@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 function UserSongs() {
@@ -10,30 +10,32 @@ function UserSongs() {
   const fetchUserSongs = async () => {
     setLoading(true);
 
-    // Fetch user ID based on the username
-    const { data: userProfile, error: userError } = await supabase
-      .from('user_profiles')
-      .select('id')
-      .eq('username', username)
-      .single();
+    try {
+      const { data: user, error: userError } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('username', username)
+        .single();
 
-    if (userError || !userProfile) {
-      console.error('Error fetching user profile:', userError);
-      setLoading(false);
-      return;
-    }
+      if (userError) {
+        console.error('Error fetching user:', userError.message);
+        setSongs([]);
+        return;
+      }
 
-    // Fetch all songs by the user's ID
-    const { data: userSongs, error: songError } = await supabase
-      .from('songs')
-      .select('id, title, singers(name), writers(name)')
-      .eq('user_id', userProfile.id)
-      .order('title', { ascending: true });
+      const { data: songsData, error: songsError } = await supabase
+        .from('songs')
+        .select('id, title, singers(name), writers(name)')
+        .eq('user_id', user.id);
 
-    if (songError) {
-      console.error('Error fetching user songs:', songError);
-    } else {
-      setSongs(userSongs);
+      if (songsError) {
+        console.error('Error fetching songs:', songsError.message);
+        setSongs([]);
+      } else {
+        setSongs(songsData);
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error.message);
     }
 
     setLoading(false);
@@ -45,23 +47,20 @@ function UserSongs() {
 
   if (loading) return <p>Loading songs...</p>;
 
+  if (!songs.length) return <p>No songs found for this user.</p>;
+
   return (
     <div>
-      <h1>{username}</h1>
-      <h2>Songs by {username}</h2>
-      {songs.length > 0 ? (
-        <ul>
-          {songs.map((song) => (
-            <li key={song.id}>
-              <h3>{song.title}</h3>
-              <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
-              <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No songs found for this user.</p>
-      )}
+      <h1>{username}'s Songs</h1>
+      <ul>
+        {songs.map((song) => (
+          <li key={song.id}>
+            <Link to={`/song/${song.id}`}>
+              {song.title} - Singer: {song.singers?.name || 'Unknown'}, Writer: {song.writers?.name || 'Unknown'}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
