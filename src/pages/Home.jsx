@@ -10,12 +10,8 @@ function Home() {
     setLoading(true);
     const { data, error } = await supabase
       .from('songs')
-      .select(`
-        id, 
-        title, 
-        singers(name), 
-        writers(name)
-      `);
+      .select('id, title, singers(name), writers(name)')
+      .order('title', { ascending: true }); // Order songs by title alphabetically
 
     if (error) {
       console.error('Error fetching songs:', error);
@@ -37,7 +33,7 @@ function Home() {
       {songs.length > 0 ? (
         <ul>
           {songs.map((song) => (
-            <li key={song.id} style={{ marginBottom: '20px', listStyle: 'none' }}>
+            <li key={song.id}>
               <Link to={`/song/${song.id}`}>
                 <h2>{song.title}</h2>
               </Link>
