@@ -63,41 +63,45 @@ function Trending() {
 
       {/* Top Songs */}
       <section>
-        <h2>Top 5 Chitrali Songs</h2>
-        <ul>
-          {topSongs.map((song) => (
-            <li key={song.id}>
-              <strong>{song.title}</strong> - {song.likes} Likes
-              <br />
-              <em>Singer:</em> {song.singers?.name || 'Unknown'} | <em>Writer:</em> {song.writers?.name || 'Unknown'}
-            </li>
-          ))}
-        </ul>
-      </section>
+  <h2>Top 5 Chitrali Songs</h2>
+  <ul>
+    {topSongs.map((song) => (
+      <li key={song.id}>
+        <strong>{song.title}</strong>
+        <span className={styles.likes}>{song.likes} 👍</span>
+      </li>
+    ))}
+  </ul>
+</section>
 
-      {/* Top Singers */}
-      <section>
-        <h2>Top 5 Chitrali Singers</h2>
-        <ul>
-          {topSingers.map((singer) => (
-            <li key={singer.id}>
-              <strong>{singer.name}</strong> - {singer.total_likes} ❤️ Total Likes
-            </li>
-          ))}
-        </ul>
-      </section>
 
-      {/* Top Writers */}
-      <section>
-        <h2>Top 5 Chitrali Poets</h2>
-        <ul>
-          {topWriters.map((writer) => (
-            <li key={writer.id}>
-              <strong>{writer.name}</strong> - {writer.total_likes} Total Likes
-            </li>
-          ))}
-        </ul>
-      </section>
+{/* Top Singers */}
+<section>
+  <h2>Top 5 Chitrali Singers</h2>
+  <ul>
+    {topSingers.map((singer) => (
+      <li key={singer.id}>
+        <strong>{singer.name}</strong>
+        <span className={styles.likes}>{singer.total_likes} 👍</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+{/* Top Writers */}
+<section>
+  <h2>Top 5 Chitrali Poets</h2>
+  <ul>
+    {topWriters.map((writer) => (
+      <li key={writer.id}>
+        <strong>{writer.name}</strong>
+        <span className={styles.likes}>{writer.total_likes} 👍</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+
     </div>
   );
 }

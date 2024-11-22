@@ -40,6 +40,9 @@
   }
   
   .trendingPage ul li {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space between title and likes */
+    align-items: center; /* Vertically align items */
     padding: 0.8rem 1rem;
     margin: 0.5rem 0;
     background: rgb(242, 244, 247);
@@ -56,8 +59,9 @@
   .trendingPage ul li strong {
     color: #1a202c;
     font-size: 1rem;
+    flex-grow: 1; /* Ensures the title takes up remaining space */
   }
-  
+
   .trendingPage ul li em {
     color: #555;
     font-style: normal;
@@ -70,6 +74,14 @@
   
   .trendingPage ul li br {
     margin-bottom: 0.5rem;
+  }
+
+  .trendingPage ul li .likes {
+    color: #555;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: right; /* Align the likes to the right */
+    margin-left: 1rem; /* Space between title and likes */
   }
   
   @media (max-width: 768px) {

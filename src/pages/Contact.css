@@ -1,0 +1,21 @@
+.contact-page {
+    padding: 20px;
+    line-height: 1.6;
+    text-align: center;
+  }
+  
+  .contact-description {
+    font-size: 1rem;
+    color: #333; /* Neutral text color */
+    margin-bottom: 20px;
+  }
+  
+  .contact-form {
+    width: 100%;
+    height: 600px;
+    border: none;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+    border-radius: 8px; /* Optional: Rounded corners for the iframe */
+  }
+  
