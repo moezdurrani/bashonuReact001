@@ -10,6 +10,7 @@ function CurrentSong() {
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState(null); // Logged-in user ID
+  const [username, setUsername] = useState('');
 
   // Edit Song Fields
   const [title, setTitle] = useState('');
@@ -18,44 +19,44 @@ function CurrentSong() {
 
   const fetchSong = async () => {
     setLoading(true);
-
+  
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
       setUserId(user?.id);
-
-      // Fetch song details, including singer and writer names
+  
+      // Fetch song details with proper relationships
       const { data: songData, error } = await supabase
         .from('songs')
-        .select('id, title, khowar_lyrics, english_lyrics, likes, comments, singers(name), writers(name), user_id')
+        .select(`
+          id,
+          title,
+          khowar_lyrics,
+          english_lyrics,
+          likes,
+          comments,
+          singers(name),
+          writers(name),
+          user_profiles(username) -- Supabase now recognizes the relationship
+        `)
         .eq('id', id)
         .single();
-
+  
       if (error) {
         console.error('Error fetching song:', error.message);
         setSong(null);
       } else {
+        console.log('Fetched song data:', songData);
         setSong(songData);
-        setTitle(songData.title);
-        setKhowarLyrics(songData.khowar_lyrics);
-        setEnglishLyrics(songData.english_lyrics);
-
-        // Check if the user has liked this song
-        const { data: likeData } = await supabase
-          .from('song_likes')
-          .select('*')
-          .eq('user_id', user?.id)
-          .eq('song_id', id)
-          .single();
-
-        setLiked(!!likeData);
       }
     } catch (error) {
       console.error('Unexpected error:', error.message);
     }
-
+  
     setLoading(false);
   };
+  
+  
 
   const handleLikeToggle = async () => {
     if (!userId) {
@@ -134,6 +135,7 @@ function CurrentSong() {
       <h1>{song.title}</h1>
       <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
       <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
+      <p><strong>Username:</strong>{song.user_profiles?.username || 'Unknown'}</p>
       <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>
       <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>
       <p><strong>Likes:</strong> {song.likes}</p>
