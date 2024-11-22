@@ -7,7 +7,8 @@ import './App.css';
 import Home from './pages/Home';
 import CreateSong from './pages/CreateSong';
 import MySongs from './pages/MySongs';
-import CurrentSong from './pages/CurrentSong'; // Import the CurrentSong page
+import CurrentSong from './pages/CurrentSong';
+import MyProfile from './pages/MyProfile'; // Import MyProfile page
 
 function App() {
   const [session, setSession] = useState(null);
@@ -26,15 +27,6 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error logging out:', error.message);
-    } else {
-      setSession(null);
-    }
-  };
-
   return (
     <Router>
       <div className="app">
@@ -48,9 +40,7 @@ function App() {
                 <Link to="/">Home</Link>
                 <Link to="/create-song">Create Song</Link>
                 <Link to="/my-songs">My Songs</Link>
-                <button className="logout-button" onClick={handleLogout}>
-                  Logout
-                </button>
+                <Link to="/my-profile">My Profile</Link> {/* Add My Profile */}
               </nav>
             </header>
             <main className="main-content">
@@ -58,7 +48,8 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/create-song" element={<CreateSong />} />
                 <Route path="/my-songs" element={<MySongs />} />
-                <Route path="/song/:id" element={<CurrentSong />} /> {/* Dynamic Route */}
+                <Route path="/song/:id" element={<CurrentSong />} />
+                <Route path="/my-profile" element={<MyProfile />} /> {/* My Profile Route */}
               </Routes>
             </main>
           </>
