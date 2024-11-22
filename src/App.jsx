@@ -13,6 +13,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import UserSongs from './pages/UserSongs';
 import Trending from './pages/Trending';
+import logoImage from './assets/bashonu1.png'; // Import the logo image
 
 function App() {
   const [session, setSession] = useState(null);
@@ -38,10 +39,17 @@ function App() {
     <Router>
       <div className="app">
         <header className="header">
-          <div className="logo">🎵 My Music App</div>
+          {/* Replace text logo with an image */}
+          <Link to="/">
+            <img
+              src={logoImage}
+              alt="My Music App Logo"
+              style={{ height: '50px', objectFit: 'contain' }} // Adjust the styles as needed
+            />
+          </Link>
           <nav className="nav-links">
             <Link to="/">Home</Link>
-            <Link to="/trending">Trending</Link> 
+            <Link to="/trending">Trending</Link>
             <Link to="/about">About</Link>
             <Link to="/my-profile">My Profile</Link>
           </nav>
