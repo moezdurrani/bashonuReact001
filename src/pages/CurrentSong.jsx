@@ -10,6 +10,7 @@ function CurrentSong() {
   const [editing, setEditing] = useState(false); // Toggle editing mode
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState(null); // Logged-in user ID
 
   // Edit Song Fields
   const [title, setTitle] = useState('');
@@ -18,6 +19,13 @@ function CurrentSong() {
 
   const fetchSong = async () => {
     setLoading(true);
+
+    // Fetch logged-in user's ID
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user = session?.user;
+    setUserId(user?.id);
 
     // Fetch song details
     const { data: songData, error } = await supabase
@@ -34,30 +42,22 @@ function CurrentSong() {
       setKhowarLyrics(songData.khowar_lyrics);
       setEnglishLyrics(songData.english_lyrics);
 
-      // Check if the user has already liked the song
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
+      // Check if the user has liked this song
       const { data: likeData } = await supabase
         .from('song_likes')
         .select('*')
-        .eq('user_id', session?.user.id)
+        .eq('user_id', user?.id)
         .eq('song_id', id)
         .single();
 
-      setLiked(!!likeData); // Set liked to true if a record exists
+      setLiked(!!likeData);
     }
 
     setLoading(false);
   };
 
   const handleLikeToggle = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.user) {
+    if (!userId) {
       setMessage('You must be logged in to like or unlike a song.');
       return;
     }
@@ -65,39 +65,16 @@ function CurrentSong() {
     try {
       if (liked) {
         // Unlike the song
-        const { error: unlikeError } = await supabase
-          .from('song_likes')
-          .delete()
-          .eq('user_id', session.user.id)
-          .eq('song_id', id);
-
-        if (unlikeError) throw unlikeError;
-
-        const { error: decrementError } = await supabase
-          .from('songs')
-          .update({ likes: Math.max((song.likes || 1) - 1, 0) })
-          .eq('id', id);
-
-        if (decrementError) throw decrementError;
+        await supabase.from('song_likes').delete().eq('user_id', userId).eq('song_id', id);
+        await supabase.from('songs').update({ likes: Math.max((song.likes || 1) - 1, 0) }).eq('id', id);
 
         setLiked(false);
         setSong({ ...song, likes: Math.max((song.likes || 1) - 1, 0) });
         setMessage('You unliked this song.');
       } else {
         // Like the song
-        const { error: likeError } = await supabase.from('song_likes').insert({
-          user_id: session.user.id,
-          song_id: id,
-        });
-
-        if (likeError) throw likeError;
-
-        const { error: incrementError } = await supabase
-          .from('songs')
-          .update({ likes: (song.likes || 0) + 1 })
-          .eq('id', id);
-
-        if (incrementError) throw incrementError;
+        await supabase.from('song_likes').insert({ user_id: userId, song_id: id });
+        await supabase.from('songs').update({ likes: (song.likes || 0) + 1 }).eq('id', id);
 
         setLiked(true);
         setSong({ ...song, likes: (song.likes || 0) + 1 });
@@ -109,11 +86,7 @@ function CurrentSong() {
   };
 
   const handleComment = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.user) {
+    if (!userId) {
       setMessage('You must be logged in to comment.');
       return;
     }
@@ -124,19 +97,10 @@ function CurrentSong() {
     }
 
     try {
-      const { error: commentError } = await supabase
-        .from('songs')
-        .update({
-          comments: [...(song.comments || []), comment],
-        })
-        .eq('id', id);
+      const updatedComments = [...(song.comments || []), comment];
+      await supabase.from('songs').update({ comments: updatedComments }).eq('id', id);
 
-      if (commentError) throw commentError;
-
-      setSong({
-        ...song,
-        comments: [...(song.comments || []), comment],
-      });
+      setSong({ ...song, comments: updatedComments });
       setComment('');
       setMessage('Comment added successfully!');
     } catch (error) {
@@ -146,16 +110,8 @@ function CurrentSong() {
 
   const handleDeleteComment = async (indexToDelete) => {
     try {
-      const updatedComments = song.comments.filter(
-        (_, index) => index !== indexToDelete
-      );
-
-      const { error: deleteError } = await supabase
-        .from('songs')
-        .update({ comments: updatedComments })
-        .eq('id', id);
-
-      if (deleteError) throw deleteError;
+      const updatedComments = song.comments.filter((_, index) => index !== indexToDelete);
+      await supabase.from('songs').update({ comments: updatedComments }).eq('id', id);
 
       setSong({ ...song, comments: updatedComments });
       setMessage('Comment deleted successfully!');
@@ -168,7 +124,7 @@ function CurrentSong() {
     e.preventDefault();
 
     try {
-      const { error } = await supabase
+      await supabase
         .from('songs')
         .update({
           title,
@@ -176,8 +132,6 @@ function CurrentSong() {
           english_lyrics: englishLyrics,
         })
         .eq('id', id);
-
-      if (error) throw error;
 
       setSong({ ...song, title, khowar_lyrics: khowarLyrics, english_lyrics: englishLyrics });
       setEditing(false); // Exit editing mode
@@ -213,8 +167,7 @@ function CurrentSong() {
         <ul>
           {song.comments?.map((c, index) => (
             <li key={index}>
-              {c}
-              <button onClick={() => handleDeleteComment(index)}>Delete</button>
+              {c} <button onClick={() => handleDeleteComment(index)}>Delete</button>
             </li>
           ))}
         </ul>
@@ -227,24 +180,27 @@ function CurrentSong() {
       </div>
 
       {/* Edit Song Button */}
-      {!editing && (
+      {!editing && userId === song.user_id && (
         <button onClick={() => setEditing(true)}>Edit Song</button>
       )}
 
       {/* Edit Song Form */}
       {editing && (
         <form onSubmit={handleEdit}>
+          <label>Title:</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+          <label>Khowar Lyrics:</label>
           <textarea
             value={khowarLyrics}
             onChange={(e) => setKhowarLyrics(e.target.value)}
             required
           />
+          <label>English Lyrics:</label>
           <textarea
             value={englishLyrics}
             onChange={(e) => setEnglishLyrics(e.target.value)}
