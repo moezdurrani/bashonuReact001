@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 function CurrentSong() {
   const { id } = useParams(); // Get the song ID from the URL
-  const navigate = useNavigate(); // Initialize useNavigate
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
-  const [userId, setUserId] = useState(null); // Logged-in user ID
-
-  // Edit Song Fields
-  const [title, setTitle] = useState('');
-  const [khowarLyrics, setKhowarLyrics] = useState('');
-  const [englishLyrics, setEnglishLyrics] = useState('');
+  const [userId, setUserId] = useState(null);
 
   const fetchSong = async () => {
     setLoading(true);
@@ -37,7 +31,7 @@ function CurrentSong() {
           comments,
           singers(name),
           writers(name),
-          user_profiles(username) -- Supabase now recognizes the relationship
+          user_profiles(username)
         `)
         .eq('id', id)
         .single();
@@ -46,8 +40,17 @@ function CurrentSong() {
         console.error('Error fetching song:', error.message);
         setSong(null);
       } else {
-        console.log('Fetched song data:', songData);
         setSong(songData);
+
+        // Check if the user has already liked the song
+        const { data: likeData } = await supabase
+          .from('song_likes')
+          .select('id')
+          .eq('user_id', user?.id)
+          .eq('song_id', id)
+          .single();
+
+        setLiked(!!likeData); // Set liked to true if likeData exists
       }
     } catch (error) {
       console.error('Unexpected error:', error.message);
@@ -65,16 +68,52 @@ function CurrentSong() {
     try {
       if (liked) {
         // Unlike the song
-        await supabase.from('song_likes').delete().eq('user_id', userId).eq('song_id', id);
-        await supabase.from('songs').update({ likes: Math.max((song.likes || 1) - 1, 0) }).eq('id', id);
+        const { error: deleteError } = await supabase
+          .from('song_likes')
+          .delete()
+          .eq('user_id', userId)
+          .eq('song_id', id);
+
+        if (deleteError) {
+          throw deleteError;
+        }
+
+        // Decrement the song's like count
+        const { error: updateError } = await supabase
+          .from('songs')
+          .update({ likes: Math.max((song.likes || 1) - 1, 0) })
+          .eq('id', id);
+
+        if (updateError) {
+          throw updateError;
+        }
 
         setLiked(false);
         setSong({ ...song, likes: Math.max((song.likes || 1) - 1, 0) });
         setMessage('You unliked this song.');
       } else {
         // Like the song
-        await supabase.from('song_likes').insert({ user_id: userId, song_id: id });
-        await supabase.from('songs').update({ likes: (song.likes || 0) + 1 }).eq('id', id);
+        const { error: insertError } = await supabase
+          .from('song_likes')
+          .insert({ user_id: userId, song_id: id });
+
+        if (insertError) {
+          if (insertError.message.includes('duplicate key value')) {
+            setMessage('You have already liked this song.');
+            return;
+          }
+          throw insertError;
+        }
+
+        // Increment the song's like count
+        const { error: updateError } = await supabase
+          .from('songs')
+          .update({ likes: (song.likes || 0) + 1 })
+          .eq('id', id);
+
+        if (updateError) {
+          throw updateError;
+        }
 
         setLiked(true);
         setSong({ ...song, likes: (song.likes || 0) + 1 });
@@ -82,41 +121,6 @@ function CurrentSong() {
       }
     } catch (error) {
       setMessage('Error updating like status: ' + error.message);
-    }
-  };
-
-  const handleComment = async () => {
-    if (!userId) {
-      setMessage('You must be logged in to comment.');
-      return;
-    }
-
-    if (!comment.trim()) {
-      setMessage('Comment cannot be empty.');
-      return;
-    }
-
-    try {
-      const updatedComments = [...(song.comments || []), comment];
-      await supabase.from('songs').update({ comments: updatedComments }).eq('id', id);
-
-      setSong({ ...song, comments: updatedComments });
-      setComment('');
-      setMessage('Comment added successfully!');
-    } catch (error) {
-      setMessage('Error adding comment: ' + error.message);
-    }
-  };
-
-  const handleDeleteComment = async (indexToDelete) => {
-    try {
-      const updatedComments = song.comments.filter((_, index) => index !== indexToDelete);
-      await supabase.from('songs').update({ comments: updatedComments }).eq('id', id);
-
-      setSong({ ...song, comments: updatedComments });
-      setMessage('Comment deleted successfully!');
-    } catch (error) {
-      setMessage('Error deleting comment: ' + error.message);
     }
   };
 
@@ -133,19 +137,7 @@ function CurrentSong() {
       <h1>{song.title}</h1>
       <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
       <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
-      <p>
-        <strong>Posted by:</strong>{' '}
-        <span
-          onClick={() =>
-            song?.user_profiles?.username
-              ? navigate(`/user/${song.user_profiles.username}`)
-              : console.log('Username not found')
-          }
-          style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
-        >
-          {song.user_profiles?.username || 'Unknown'}
-        </span>
-      </p>
+      <p><strong>Username:</strong> {song.user_profiles?.username || 'Unknown'}</p>
       <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>
       <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>
       <p><strong>Likes:</strong> {song.likes}</p>
@@ -160,7 +152,6 @@ function CurrentSong() {
           {song.comments?.map((c, index) => (
             <li key={index}>
               {c}
-              <button onClick={() => handleDeleteComment(index)}>Delete</button>
             </li>
           ))}
         </ul>
@@ -169,7 +160,9 @@ function CurrentSong() {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-        <button onClick={handleComment}>Add Comment</button>
+        <button onClick={() => setMessage('Add Comment functionality not yet implemented')}>
+          Add Comment
+        </button>
       </div>
 
       {message && <p>{message}</p>}
