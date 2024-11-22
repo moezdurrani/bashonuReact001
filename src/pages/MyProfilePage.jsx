@@ -46,8 +46,14 @@ function MyProfile() {
           <p>No user is logged in.</p>
         )}
 
-        <Link to="/my-songs" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline' }}>
+        {/* My Songs Link */}
+        <Link to="/my-songs" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline', display: 'block', marginBottom: '10px' }}>
           View My Songs
+        </Link>
+
+        {/* Create Song Link */}
+        <Link to="/create-song" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline', display: 'block' }}>
+          Create a Song
         </Link>
       </div>
 

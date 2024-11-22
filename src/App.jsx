@@ -5,10 +5,10 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import './App.css';
 import Home from './pages/Home';
-import CreateSong from './pages/CreateSong';
 import MyProfile from './pages/MyProfilePage';
 import CurrentSong from './pages/CurrentSong';
-import MySongs from './pages/MySongs'; // Import MySongs
+import CreateSong from './pages/CreateSong';
+import MySongs from './pages/MySongs'; // Import MySongs component
 
 function App() {
   const [session, setSession] = useState(null);
@@ -38,17 +38,16 @@ function App() {
               <div className="logo">🎵 My Music App</div>
               <nav className="nav-links">
                 <Link to="/">Home</Link>
-                <Link to="/create-song">Create Song</Link>
-                <Link to="/my-profile">My Profile</Link> {/* My Profile Link */}
+                <Link to="/my-profile">My Profile</Link>
               </nav>
             </header>
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/create-song" element={<CreateSong />} />
                 <Route path="/my-profile" element={<MyProfile />} />
                 <Route path="/song/:id" element={<CurrentSong />} />
-                <Route path="/my-songs" element={<MySongs />} /> {/* My Songs Route */}
+                <Route path="/create-song" element={<CreateSong />} />
+                <Route path="/my-songs" element={<MySongs />} /> {/* Route for My Songs */}
               </Routes>
             </main>
           </>
