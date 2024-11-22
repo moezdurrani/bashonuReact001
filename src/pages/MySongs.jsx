@@ -1,31 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 
-function Home() {
+function MySongs() {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchSongs = async () => {
+  const fetchMySongs = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('songs').select('*');
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user = session?.user;
 
-    if (error) {
-      console.error('Error fetching songs:', error);
-    } else {
-      setSongs(data);
+    if (user) {
+      const { data, error } = await supabase
+        .from('songs')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error fetching songs:', error);
+      } else {
+        setSongs(data);
+      }
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchSongs();
+    fetchMySongs();
   }, []);
 
-  if (loading) return <p>Loading songs...</p>;
+  if (loading) return <p>Loading your songs...</p>;
 
   return (
     <div>
-      <h1>All Songs</h1>
+      <h1>My Songs</h1>
       {songs.length > 0 ? (
         <ul>
           {songs.map((song) => (
@@ -37,10 +47,10 @@ function Home() {
           ))}
         </ul>
       ) : (
-        <p>No songs found.</p>
+        <p>You haven't uploaded any songs yet.</p>
       )}
     </div>
   );
 }
 
-export default Home;
+export default MySongs;
