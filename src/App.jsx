@@ -17,31 +17,60 @@ import logoImage from './assets/bashonu1.png';
 
 
 function Header() {
-  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation(); // Get the current path
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const isActive = (path) => location.pathname === path; // Check if the path matches the current route
 
   return (
     <header className="header">
       <div className="logo">
-        <img
-          src={logoImage}
-          alt="My Music App Logo"
-          style={{
-            height: '40px', // Increase height
-            width: 'auto', // Maintain aspect ratio
-            marginRight: '10px', // Add spacing between logo and text
-          }}
-        />
-        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}></span>
+        <img src={logoImage} alt="Logo" />
       </div>
-      <nav className="nav-links">
-        <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
-        <Link to="/trending" className={location.pathname === '/trending' ? 'active' : ''}>Trending</Link>
-        <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link>
-        <Link to="/my-profile" className={location.pathname === '/my-profile' ? 'active' : ''}>My Profile</Link>
+      <button className="menu-toggle" onClick={toggleMenu}>
+        ☰
+      </button>
+      <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <Link
+          to="/"
+          onClick={() => setMenuOpen(false)}
+          className={isActive('/') ? 'active' : ''}
+        >
+          Home
+        </Link>
+        <Link
+          to="/trending"
+          onClick={() => setMenuOpen(false)}
+          className={isActive('/trending') ? 'active' : ''}
+        >
+          Trending
+        </Link>
+        <Link
+          to="/about"
+          onClick={() => setMenuOpen(false)}
+          className={isActive('/about') ? 'active' : ''}
+        >
+          About
+        </Link>
+        <Link
+          to="/my-profile"
+          onClick={() => setMenuOpen(false)}
+          className={isActive('/my-profile') ? 'active' : ''}
+        >
+          My Profile
+        </Link>
       </nav>
     </header>
   );
 }
+
+
+
+
 
 
 

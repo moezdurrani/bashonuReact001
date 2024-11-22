@@ -16,29 +16,64 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem; /* Add enough padding to prevent cutting */
+  padding: 1rem 2rem;
   background-color: rgb(255, 255, 255);
-  color: white;
+  color: #333;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  box-sizing: border-box; /* Ensures padding and borders don't affect width */
+  box-sizing: border-box;
 }
 
-
-.header .logo {
+.logo {
   display: flex;
   align-items: center;
 }
 
 .logo img {
-  width: 40px;
+  width: 200px;
   height: auto;
-  margin-right: 10px; /* Space between the logo and text */
+  margin-right: 10px;
+}
+
+.menu-toggle {
+  display: none; /* Hidden by default */
+  background: none;
+  border: none;
+  font-size: 2.75rem;
+  cursor: pointer;
+  color: #333;
 }
 
 .nav-links {
   display: flex;
   gap: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-links a {
+  color: rgb(99, 99, 99);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.nav-links a:hover {
+  background-color: rgb(242, 242, 242);
+}
+
+.nav-links.open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  padding: 1rem 0;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .nav-links a.active {
@@ -54,21 +89,41 @@ body {
 .nav-links button,
 li a {
   color: rgb(99, 99, 99);
-  text-decoration: none; /* Removes underline */
+  text-decoration: none;
   font-weight: bold;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.9rem 1.6rem; /* Ensure consistent padding */
-  border-radius: 5px; /* Optional: Add rounded corners */
-  transition: color 0.3s ease; /* Smooth color transition */
-  display: inline-block;
+  padding: 0.9rem 1.6rem;
+  border-radius: 5px;
+  transition: color 0.3s ease;
 }
 
 .nav-links a:hover,
 .nav-links button:hover {
   background-color: rgb(242, 242, 242); /* Hover background color */
 }
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block; /* Show toggle button on smaller screens */
+  }
+
+  .nav-links {
+    display: none; /* Hide navigation links by default */
+  }
+
+  .nav-links.open {
+    display: flex; /* Show dropdown when open */
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem; /* Adjust gap for mobile */
+  }
+}
+
 
 ul {
   list-style-type: none;
@@ -86,6 +141,7 @@ ul li {
   box-shadow: 0 0.8px 0.8px rgba(0, 0, 0, 0.15);
   text-align: left; /* Align content inside the song item to the left */
   overflow-x: auto; /* Enable horizontal scrolling if content overflows */
+  overflow-y: hidden;
   white-space: nowrap; 
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; /* Smooth transition */
 }

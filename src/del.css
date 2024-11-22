@@ -1,18 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300&display=swap');
-
-
-
-
-
-
-
-
-
-
-
-li:hover {
-    background-color: rgb(242, 242, 242); /* Subtle background color change */
-    transform: scale(1.0);
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+body {
+    font-family: "Comfortaa",Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(242, 244, 247);
+    color: #333;
   }
+  
+  h1 {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #1a202c;
+  }
+  
+  section {
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #1a202c;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  ul li {
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+    background: rgb(242, 244, 247);
+    border-radius: 8px;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  ul li:hover {
+    background: rgb(230, 236, 245);
+    transform: scale(1.02);
+  }
+  
+  ul li strong {
+    color: #1a202c;
+    font-size: 1rem;
+  }
+  
+  ul li em {
+    color: #555;
+    font-style: normal;
+    font-weight: bold;
+  }
+  
+  ul li:last-child {
+    margin-bottom: 0;
+  }
+  
+  ul li br {
+    margin-bottom: 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    section {
+      padding: 1rem;
+      max-width: 90%;
+    }
+  
+    section h2 {
+      font-size: 1.3rem;
+    }
+  
+    ul li {
+      padding: 0.5rem 0.8rem;
+    }
+  
+    ul li strong {
+      font-size: 0.9rem;
+    }
+  
+    ul li em {
+      font-size: 0.8rem;
+    }
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+
+
+.trendingPage {
+    padding: 2rem;
+    background-color: rgb(242, 244, 247);
+    font-family: "Comfortaa",Arial, sans-serif;
+  }
+  
+  .trendingPage h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  .trendingPage section {
+    margin-bottom: 2rem;
+  }
+  
+  .trendingPage h2 {
+    font-size: 2rem;
+    color: #444;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .trendingPage ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .trendingPage li {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .trendingPage li strong {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #222;
+  }
+  
+  .trendingPage li em {
+    color: #666;
+    font-style: normal;
+  }
+  

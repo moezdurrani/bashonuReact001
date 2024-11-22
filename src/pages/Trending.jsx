@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import styles from './Trending.module.css';
 
 function Trending() {
   const [topSongs, setTopSongs] = useState([]);
@@ -57,12 +58,12 @@ function Trending() {
   if (loading) return <p>Loading trending data...</p>;
 
   return (
-    <div>
+    <div className={styles.trendingPage}>
       <h1>Trending</h1>
 
       {/* Top Songs */}
       <section>
-        <h2>Top 5 Songs</h2>
+        <h2>Top 5 Chitrali Songs</h2>
         <ul>
           {topSongs.map((song) => (
             <li key={song.id}>
@@ -76,11 +77,11 @@ function Trending() {
 
       {/* Top Singers */}
       <section>
-        <h2>Top 5 Singers</h2>
+        <h2>Top 5 Chitrali Singers</h2>
         <ul>
           {topSingers.map((singer) => (
             <li key={singer.id}>
-              <strong>{singer.name}</strong> - {singer.total_likes} Total Likes
+              <strong>{singer.name}</strong> - {singer.total_likes} ❤️ Total Likes
             </li>
           ))}
         </ul>
@@ -88,7 +89,7 @@ function Trending() {
 
       {/* Top Writers */}
       <section>
-        <h2>Top 5 Writers</h2>
+        <h2>Top 5 Chitrali Poets</h2>
         <ul>
           {topWriters.map((writer) => (
             <li key={writer.id}>
