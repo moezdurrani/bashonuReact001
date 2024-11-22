@@ -8,7 +8,8 @@ import Home from './pages/Home';
 import MyProfile from './pages/MyProfilePage';
 import CurrentSong from './pages/CurrentSong';
 import CreateSong from './pages/CreateSong';
-import MySongs from './pages/MySongs'; // Import MySongs component
+import MySongs from './pages/MySongs'; 
+import About from './pages/About';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -38,6 +39,7 @@ function App() {
               <div className="logo">🎵 My Music App</div>
               <nav className="nav-links">
                 <Link to="/">Home</Link>
+                <Link to="/about">About</Link>
                 <Link to="/my-profile">My Profile</Link>
               </nav>
             </header>
@@ -48,6 +50,7 @@ function App() {
                 <Route path="/song/:id" element={<CurrentSong />} />
                 <Route path="/create-song" element={<CreateSong />} />
                 <Route path="/my-songs" element={<MySongs />} /> {/* Route for My Songs */}
+                <Route path="/about" element={<About />} />
               </Routes>
             </main>
           </>
