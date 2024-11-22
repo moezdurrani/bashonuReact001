@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { Link } from 'react-router-dom'; // Import Link
 
 function MySongs() {
   const [songs, setSongs] = useState([]);
@@ -41,7 +42,9 @@ function MySongs() {
         <ul>
           {songs.map((song) => (
             <li key={song.id}>
-              <h2>{song.title}</h2>
+              <Link to={`/song/${song.id}`}>
+                <h2>{song.title}</h2>
+              </Link>
               <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
               <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
             </li>
