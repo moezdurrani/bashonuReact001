@@ -7,6 +7,7 @@ import './App.css';
 import Home from './pages/Home';
 import CreateSong from './pages/CreateSong';
 import MySongs from './pages/MySongs';
+import CurrentSong from './pages/CurrentSong'; // Import the CurrentSong page
 
 function App() {
   const [session, setSession] = useState(null);
@@ -57,6 +58,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/create-song" element={<CreateSong />} />
                 <Route path="/my-songs" element={<MySongs />} />
+                <Route path="/song/:id" element={<CurrentSong />} /> {/* Dynamic Route */}
               </Routes>
             </main>
           </>

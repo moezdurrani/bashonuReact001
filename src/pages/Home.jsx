@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 
 function Home() {
   const [songs, setSongs] = useState([]);
@@ -30,7 +31,9 @@ function Home() {
         <ul>
           {songs.map((song) => (
             <li key={song.id}>
-              <h2>{song.title}</h2>
+              <Link to={`/song/${song.id}`}> {/* Link to CurrentSong page */}
+                <h2>{song.title}</h2>
+              </Link>
               <p>Khowar Lyrics: {song.khowar_lyrics}</p>
               <p>English Lyrics: {song.english_lyrics}</p>
             </li>
