@@ -10,6 +10,7 @@ import CurrentSong from './pages/CurrentSong';
 import CreateSong from './pages/CreateSong';
 import MySongs from './pages/MySongs'; 
 import About from './pages/About';
+import Contact from './pages/Contact';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -40,6 +41,7 @@ function App() {
               <nav className="nav-links">
                 <Link to="/">Home</Link>
                 <Link to="/about">About</Link>
+                <Link to="/contact">Contact</Link>
                 <Link to="/my-profile">My Profile</Link>
               </nav>
             </header>
@@ -51,6 +53,7 @@ function App() {
                 <Route path="/create-song" element={<CreateSong />} />
                 <Route path="/my-songs" element={<MySongs />} /> {/* Route for My Songs */}
                 <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
               </Routes>
             </main>
           </>

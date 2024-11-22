@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function About() {
   return (
@@ -22,6 +23,11 @@ function About() {
       </p>
       <p>
         Stay connected and involved—follow us on social media and YouTube for regular updates, feature releases, and community events.
+      </p>
+      <p>
+        <Link to="/contact" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline' }}>
+          Contact Me
+        </Link>
       </p>
     </div>
   );
