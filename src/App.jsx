@@ -6,9 +6,9 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import './App.css';
 import Home from './pages/Home';
 import CreateSong from './pages/CreateSong';
-import MySongs from './pages/MySongs';
+import MyProfile from './pages/MyProfilePage';
 import CurrentSong from './pages/CurrentSong';
-import MyProfile from './pages/MyProfile'; // Import MyProfile page
+import MySongs from './pages/MySongs'; // Import MySongs
 
 function App() {
   const [session, setSession] = useState(null);
@@ -39,17 +39,16 @@ function App() {
               <nav className="nav-links">
                 <Link to="/">Home</Link>
                 <Link to="/create-song">Create Song</Link>
-                <Link to="/my-songs">My Songs</Link>
-                <Link to="/my-profile">My Profile</Link> {/* Add My Profile */}
+                <Link to="/my-profile">My Profile</Link> {/* My Profile Link */}
               </nav>
             </header>
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/create-song" element={<CreateSong />} />
-                <Route path="/my-songs" element={<MySongs />} />
+                <Route path="/my-profile" element={<MyProfile />} />
                 <Route path="/song/:id" element={<CurrentSong />} />
-                <Route path="/my-profile" element={<MyProfile />} /> {/* My Profile Route */}
+                <Route path="/my-songs" element={<MySongs />} /> {/* My Songs Route */}
               </Routes>
             </main>
           </>
