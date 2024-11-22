@@ -124,6 +124,36 @@ function CurrentSong() {
     }
   };
 
+  const handleAddComment = async () => {
+    if (!userId) {
+      setMessage('You must be logged in to add a comment.');
+      return;
+    }
+
+    if (!comment.trim()) {
+      setMessage('Comment cannot be empty.');
+      return;
+    }
+
+    try {
+      const updatedComments = [...(song.comments || []), comment];
+      const { error } = await supabase
+        .from('songs')
+        .update({ comments: updatedComments })
+        .eq('id', id);
+
+      if (error) {
+        throw error;
+      }
+
+      setSong({ ...song, comments: updatedComments });
+      setComment('');
+      setMessage('Comment added successfully!');
+    } catch (error) {
+      setMessage('Error adding comment: ' + error.message);
+    }
+  };
+
   useEffect(() => {
     fetchSong();
   }, [id]);
@@ -150,9 +180,7 @@ function CurrentSong() {
         <h2>Comments</h2>
         <ul>
           {song.comments?.map((c, index) => (
-            <li key={index}>
-              {c}
-            </li>
+            <li key={index}>{c}</li>
           ))}
         </ul>
         <textarea
@@ -160,9 +188,7 @@ function CurrentSong() {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-        <button onClick={() => setMessage('Add Comment functionality not yet implemented')}>
-          Add Comment
-        </button>
+        <button onClick={handleAddComment}>Add Comment</button>
       </div>
 
       {message && <p>{message}</p>}
