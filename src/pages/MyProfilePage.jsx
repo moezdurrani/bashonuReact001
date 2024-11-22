@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Link } from 'react-router-dom';
 
-function MyProfile() {
+function MyProfile({ session }) {
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState(''); // Current username
-  const [newUsername, setNewUsername] = useState(''); // Input for updating username
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [username, setUsername] = useState('');
 
-  // Fetch the user's profile, including username
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.user) {
+    const fetchUser = async () => {
+      if (session) {
         setUser(session.user);
 
-        // Fetch the username from the user_profiles table
+        // Fetch the username from user_profiles table
         const { data, error } = await supabase
           .from('user_profiles')
           .select('username')
@@ -29,100 +25,51 @@ function MyProfile() {
         if (error) {
           console.error('Error fetching username:', error.message);
         } else {
-          setUsername(data?.username || 'Not set'); // Display "Not set" if no username exists
+          setUsername(data?.username || 'No username set');
         }
       }
       setLoading(false);
     };
 
-    fetchUserProfile();
-  }, []);
+    fetchUser();
+  }, [session]);
 
-  // Handle username update
-  const handleUsernameUpdate = async (e) => {
-    e.preventDefault();
-
-    if (!newUsername.trim()) {
-      setMessage('Username cannot be empty.');
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({ username: newUsername.trim() })
-        .eq('id', user.id);
-
-      if (error) {
-        throw error;
-      }
-
-      setUsername(newUsername.trim());
-      setNewUsername('');
-      setMessage('Username updated successfully!');
-    } catch (error) {
-      setMessage('Error updating username: ' + error.message);
-    }
-  };
-
-  // Handle logout
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       setMessage('Error logging out: ' + error.message);
     } else {
+      setUser(null);
+      setMessage('Successfully logged out!');
       window.location.reload(); // Reload the page to reset the app state
     }
   };
 
-  if (loading) return <p>Loading profile...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="profile-container">
-      <div className="profile-content">
-        <h1>My Profile</h1>
-        {user ? (
-          <div>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Username:</strong> {username}</p>
-            <form onSubmit={handleUsernameUpdate}>
-              <label>
-                Update Username:
-                <input
-                  type="text"
-                  value={newUsername}
-                  onChange={(e) => setNewUsername(e.target.value)}
-                  style={{ marginLeft: '10px' }}
-                />
-              </label>
-              <button type="submit" style={{ marginLeft: '10px' }}>
-                Update
-              </button>
-            </form>
+    <div>
+      {!user ? (
+        <div>
+          <h1>Login</h1>
+          <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
+        </div>
+      ) : (
+        <div>
+          <h1>Welcome, {user.email}</h1>
+          <p><strong>Username:</strong> {username}</p>
+          <div style={{ marginBottom: '20px' }}>
+            <Link to="/my-songs" style={{ marginRight: '10px' }}>
+              View My Songs
+            </Link>
+            <Link to="/create-song">
+              Create a Song
+            </Link>
           </div>
-        ) : (
-          <p>No user is logged in.</p>
-        )}
-
-        {/* My Songs Link */}
-        <Link to="/my-songs" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline', display: 'block', marginBottom: '10px' }}>
-          View My Songs
-        </Link>
-
-        {/* Create Song Link */}
-        <Link to="/create-song" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline', display: 'block' }}>
-          Create a Song
-        </Link>
-      </div>
-
-      <button
-        onClick={handleLogout}
-        className="logout-button"
-      >
-        Logout
-      </button>
-
-      {message && <p>{message}</p>}
+          <button onClick={handleLogout}>Logout</button>
+          <p>{message}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ import Home from './pages/Home';
 import MyProfile from './pages/MyProfilePage';
 import CurrentSong from './pages/CurrentSong';
 import CreateSong from './pages/CreateSong';
-import MySongs from './pages/MySongs'; 
+import MySongs from './pages/MySongs';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import UserSongs from './pages/UserSongs';
@@ -17,9 +17,12 @@ function App() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const fetchSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-    });
+    };
+
+    fetchSession();
 
     const {
       data: { subscription },
@@ -33,34 +36,36 @@ function App() {
   return (
     <Router>
       <div className="app">
-        {!session ? (
-          <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
-        ) : (
-          <>
-            <header className="header">
-              <div className="logo">🎵 My Music App</div>
-              <nav className="nav-links">
-                <Link to="/">Home</Link>
-                <Link to="/about">About</Link>
-                <Link to="/contact">Contact</Link>
-                <Link to="/my-profile">My Profile</Link>
-              </nav>
-            </header>
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/my-profile" element={<MyProfile />} />
-                <Route path="/song/:id" element={<CurrentSong />} />
-                <Route path="/create-song" element={<CreateSong />} />
-                <Route path="/my-songs" element={<MySongs />} /> {/* Route for My Songs */}
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/user/:username" element={<UserSongs />} />
-                
-              </Routes>
-            </main>
-          </>
-        )}
+        <header className="header">
+          <div className="logo">🎵 My Music App</div>
+          <nav className="nav-links">
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+            <Link to="/contact">Contact</Link>
+            <Link to="/my-profile">My Profile</Link>
+          </nav>
+        </header>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route
+              path="/my-profile"
+              element={<MyProfile session={session} />}
+            />
+            <Route path="/song/:id" element={<CurrentSong session={session} />} />
+            <Route
+              path="/create-song"
+              element={session ? <CreateSong session={session} /> : <Home />}
+            />
+            <Route
+              path="/my-songs"
+              element={session ? <MySongs session={session} /> : <Home />}
+            />
+            <Route path="/user/:username" element={<UserSongs />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );
