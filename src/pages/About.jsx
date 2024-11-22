@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './About.css'; // Import the CSS file
 
 function About() {
   return (
-    <div style={{ padding: '20px', lineHeight: '1.6' }}>
+    <div className="about-page">
       <h1>Welcome to Our Preservation Hub for Khowar Music</h1>
       <p>
         Our website is dedicated to protecting and celebrating the rich musical heritage of the Chitrali people 
@@ -25,7 +26,7 @@ function About() {
         Stay connected and involved—follow us on social media and YouTube for regular updates, feature releases, and community events.
       </p>
       <p>
-        <Link to="/contact" style={{ fontSize: '18px', color: 'blue', textDecoration: 'underline' }}>
+        <Link to="/contact" className="about-contact-link">
           Contact Me
         </Link>
       </p>

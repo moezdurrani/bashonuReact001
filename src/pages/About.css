@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+
+
+.about-page {
+    padding: 20px;
+    line-height: 1.8;
+    font-family: "Comfortaa",Arial, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 800px;
+  }
+  
+  .about-page h1 {
+    font-size: 2rem;
+    color: #444;
+    margin-bottom: 20px;
+  }
+  
+  .about-page h2 {
+    font-size: 1.5rem;
+    color: #444;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+  }
+  
+  .about-page p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+  
+  .about-page .about-contact-link {
+    font-size: 1.1rem;
+    color: rgb(40,100,246);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.2rem 0.4rem; /* Ensure consistent spacing */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth transition effect */
+    display: inline-block; /* Allows padding to apply properly */
+  }
+  
+  .about-page .about-contact-link:hover {
+    color: #0056b3;
+    text-decoration: none; /* Prevent underline on hover */
+    background-color: rgb(231, 231, 231);
+  }
+  
+  
