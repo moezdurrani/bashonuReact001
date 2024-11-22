@@ -1,112 +1,212 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
-function UserSongs() {
-  const { username } = useParams(); // Get the username from the URL
-  const [songs, setSongs] = useState([]);
-  const [profileImageUrl, setProfileImageUrl] = useState(null);
+function CurrentSong() {
+  const { id } = useParams(); // Get the song ID from the URL
+  const navigate = useNavigate(); // Add navigate hook
+  const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [liked, setLiked] = useState(false);
+  const [comment, setComment] = useState('');
+  const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState(null);
 
-  const fetchUserSongsAndImage = async () => {
+  const fetchSong = async () => {
     setLoading(true);
-    setError(''); // Reset error message
 
     try {
-      console.log(`Fetching user data for username: ${username}`); // Debug log
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+      setUserId(user?.id);
 
-      // Fetch user profile
-      const { data: user, error: userError } = await supabase
-        .from('user_profiles')
-        .select('id, profile_image_url')
-        .eq('username', username)
+      // Fetch song details with proper relationships
+      const { data: songData, error } = await supabase
+        .from('songs')
+        .select(`
+          id,
+          title,
+          khowar_lyrics,
+          english_lyrics,
+          likes,
+          comments,
+          singers(name),
+          writers(name),
+          user_profiles(username)
+        `)
+        .eq('id', id)
         .single();
 
-      if (userError) {
-        console.error('Error fetching user:', userError.message);
-        setError('User not found.');
-        setSongs([]);
-        setLoading(false);
-        return;
-      }
-
-      console.log('User data fetched:', user); // Debug log
-
-      // Try fetching profile image
-      if (user.profile_image_url) {
-        console.log(`Fetching profile image for user: ${username}`); // Debug log
-        try {
-          const { data: publicUrl } = supabase.storage
-            .from('user-images')
-            .getPublicUrl(user.profile_image_url);
-
-          setProfileImageUrl(publicUrl.publicUrl);
-        } catch (imageError) {
-          console.error('Error fetching profile image:', imageError.message);
-          setProfileImageUrl('/default-profile.png'); // Fallback to default
-        }
+      if (error) {
+        console.error('Error fetching song:', error.message);
+        setSong(null);
       } else {
-        console.log('No profile image found for user, using default image.');
-        setProfileImageUrl('/default-profile.png'); // Fallback
-      }
+        setSong(songData);
 
-      // Fetch songs by user
-      console.log(`Fetching songs for user ID: ${user.id}`); // Debug log
-      const { data: songsData, error: songsError } = await supabase
-        .from('songs')
-        .select('id, title, singers(name), writers(name)')
-        .eq('user_id', user.id);
+        // Check if the user has already liked the song
+        const { data: likeData } = await supabase
+          .from('song_likes')
+          .select('id')
+          .eq('user_id', user?.id)
+          .eq('song_id', id)
+          .single();
 
-      if (songsError) {
-        console.error('Error fetching songs:', songsError.message);
-        setError('Error fetching songs.');
-        setSongs([]);
-      } else {
-        console.log('Songs data fetched:', songsData); // Debug log
-        setSongs(songsData);
+        setLiked(!!likeData); // Set liked to true if likeData exists
       }
-    } catch (fetchError) {
-      console.error('Unexpected error:', fetchError.message); // Debug log
-      setError('An unexpected error occurred.');
+    } catch (error) {
+      console.error('Unexpected error:', error.message);
     }
 
     setLoading(false);
   };
 
+  const handleLikeToggle = async () => {
+    if (!userId) {
+      setMessage('You must be logged in to like or unlike a song.');
+      return;
+    }
+
+    try {
+      if (liked) {
+        // Unlike the song
+        const { error: deleteError } = await supabase
+          .from('song_likes')
+          .delete()
+          .eq('user_id', userId)
+          .eq('song_id', id);
+
+        if (deleteError) {
+          throw deleteError;
+        }
+
+        // Decrement the song's like count
+        const { error: updateError } = await supabase
+          .from('songs')
+          .update({ likes: Math.max((song.likes || 1) - 1, 0) })
+          .eq('id', id);
+
+        if (updateError) {
+          throw updateError;
+        }
+
+        setLiked(false);
+        setSong({ ...song, likes: Math.max((song.likes || 1) - 1, 0) });
+        setMessage('You unliked this song.');
+      } else {
+        // Like the song
+        const { error: insertError } = await supabase
+          .from('song_likes')
+          .insert({ user_id: userId, song_id: id });
+
+        if (insertError) {
+          if (insertError.message.includes('duplicate key value')) {
+            setMessage('You have already liked this song.');
+            return;
+          }
+          throw insertError;
+        }
+
+        // Increment the song's like count
+        const { error: updateError } = await supabase
+          .from('songs')
+          .update({ likes: (song.likes || 0) + 1 })
+          .eq('id', id);
+
+        if (updateError) {
+          throw updateError;
+        }
+
+        setLiked(true);
+        setSong({ ...song, likes: (song.likes || 0) + 1 });
+        setMessage('You liked this song!');
+      }
+    } catch (error) {
+      setMessage('Error updating like status: ' + error.message);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!userId) {
+      setMessage('You must be logged in to add a comment.');
+      return;
+    }
+
+    if (!comment.trim()) {
+      setMessage('Comment cannot be empty.');
+      return;
+    }
+
+    try {
+      const updatedComments = [...(song.comments || []), comment];
+      const { error } = await supabase
+        .from('songs')
+        .update({ comments: updatedComments })
+        .eq('id', id);
+
+      if (error) {
+        throw error;
+      }
+
+      setSong({ ...song, comments: updatedComments });
+      setComment('');
+      setMessage('Comment added successfully!');
+    } catch (error) {
+      setMessage('Error adding comment: ' + error.message);
+    }
+  };
+
   useEffect(() => {
-    fetchUserSongsAndImage();
-  }, [username]);
+    fetchSong();
+  }, [id]);
 
-  if (loading) return <p>Loading songs...</p>;
+  if (loading) return <p>Loading song details...</p>;
 
-  if (error) return <p>{error}</p>;
-
-  if (!songs.length) return <p>No songs found for this user.</p>;
+  if (!song) return <p>Song not found.</p>;
 
   return (
     <div>
-      <h1>{username}'s Songs</h1>
-      {profileImageUrl && (
-        <div style={{ marginBottom: '20px' }}>
-          <img
-            src={profileImageUrl}
-            alt={`${username}'s profile`}
-            style={{ width: '100px', height: '100px', borderRadius: '50%' }}
-          />
-        </div>
-      )}
-      <ul>
-        {songs.map((song) => (
-          <li key={song.id}>
-            <Link to={`/song/${song.id}`}>
-              {song.title} - Singer: {song.singers?.name || 'Unknown'}, Writer: {song.writers?.name || 'Unknown'}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <h1>{song.title}</h1>
+      <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
+      <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
+      <p>
+        <strong>Posted by:</strong>{' '}
+        <span
+          onClick={() =>
+            song?.user_profiles?.username
+              ? navigate(`/user/${song.user_profiles.username}`)
+              : console.log('Username not found')
+          }
+          style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
+        >
+          {song.user_profiles?.username || 'Unknown'}
+        </span>
+      </p>
+      <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>
+      <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>
+      <p><strong>Likes:</strong> {song.likes}</p>
+
+      {/* Like Button */}
+      <button onClick={handleLikeToggle}>{liked ? 'Unlike' : 'Like'}</button>
+
+      {/* Comment Section */}
+      <div>
+        <h2>Comments</h2>
+        <ul>
+          {song.comments?.map((c, index) => (
+            <li key={index}>{c}</li>
+          ))}
+        </ul>
+        <textarea
+          placeholder="Add a comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <button onClick={handleAddComment}>Add Comment</button>
+      </div>
+
+      {message && <p>{message}</p>}
     </div>
   );
 }
 
-export default UserSongs;
+export default CurrentSong;

@@ -11,6 +11,7 @@ function CurrentSong() {
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState(null);
+  const [lyricsType, setLyricsType] = useState('khowar'); // Default to Khowar lyrics
 
   const fetchSong = async () => {
     setLoading(true);
@@ -181,8 +182,17 @@ function CurrentSong() {
           {song.user_profiles?.username || 'Unknown'}
         </span>
       </p>
-      <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>
-      <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>
+
+      {/* Lyrics Toggle Buttons */}
+      <div>
+        <button onClick={() => setLyricsType('khowar')}>Show Khowar Lyrics</button>
+        <button onClick={() => setLyricsType('english')}>Show English Lyrics</button>
+      </div>
+
+      {/* Display Lyrics Based on Selection */}
+      {lyricsType === 'khowar' && <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>}
+      {lyricsType === 'english' && <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>}
+
       <p><strong>Likes:</strong> {song.likes}</p>
 
       {/* Like Button */}
