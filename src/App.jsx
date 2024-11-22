@@ -41,7 +41,6 @@ function App() {
           <nav className="nav-links">
             <Link to="/">Home</Link>
             <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
             <Link to="/my-profile">My Profile</Link>
           </nav>
         </header>
