@@ -84,7 +84,6 @@ function MyProfile() {
         {user ? (
           <div>
             <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>ID:</strong> {user.id}</p>
             <p><strong>Username:</strong> {username}</p>
             <form onSubmit={handleUsernameUpdate}>
               <label>
