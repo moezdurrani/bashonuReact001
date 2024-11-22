@@ -43,43 +43,59 @@ function CurrentSong() {
     setLoading(false);
   };
 
-  const handleLike = async () => {
+  const handleLikeToggle = async () => {
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
     if (!session?.user) {
-      setMessage('You must be logged in to like a song.');
-      return;
-    }
-
-    if (liked) {
-      setMessage('You have already liked this song.');
+      setMessage('You must be logged in to like or unlike a song.');
       return;
     }
 
     try {
-      // Add a like to the song
-      const { error: likeError } = await supabase.from('song_likes').insert({
-        user_id: session.user.id,
-        song_id: id,
-      });
+      if (liked) {
+        // Unlike the song
+        const { error: unlikeError } = await supabase
+          .from('song_likes')
+          .delete()
+          .eq('user_id', session.user.id)
+          .eq('song_id', id);
 
-      if (likeError) throw likeError;
+        if (unlikeError) throw unlikeError;
 
-      // Increment the like count in the songs table
-      const { error: updateError } = await supabase
-        .from('songs')
-        .update({ likes: (song.likes || 0) + 1 })
-        .eq('id', id);
+        const { error: decrementError } = await supabase
+          .from('songs')
+          .update({ likes: Math.max((song.likes || 1) - 1, 0) })
+          .eq('id', id);
 
-      if (updateError) throw updateError;
+        if (decrementError) throw decrementError;
 
-      setLiked(true); // Mark as liked
-      setSong({ ...song, likes: (song.likes || 0) + 1 }); // Update local state
-      setMessage('You liked this song!');
+        setLiked(false);
+        setSong({ ...song, likes: Math.max((song.likes || 1) - 1, 0) });
+        setMessage('You unliked this song.');
+      } else {
+        // Like the song
+        const { error: likeError } = await supabase.from('song_likes').insert({
+          user_id: session.user.id,
+          song_id: id,
+        });
+
+        if (likeError) throw likeError;
+
+        const { error: incrementError } = await supabase
+          .from('songs')
+          .update({ likes: (song.likes || 0) + 1 })
+          .eq('id', id);
+
+        if (incrementError) throw incrementError;
+
+        setLiked(true);
+        setSong({ ...song, likes: (song.likes || 0) + 1 });
+        setMessage('You liked this song!');
+      }
     } catch (error) {
-      setMessage('Error liking the song: ' + error.message);
+      setMessage('Error updating like status: ' + error.message);
     }
   };
 
@@ -120,6 +136,26 @@ function CurrentSong() {
     }
   };
 
+  const handleDeleteComment = async (indexToDelete) => {
+    try {
+      const updatedComments = song.comments.filter(
+        (_, index) => index !== indexToDelete
+      );
+
+      const { error: deleteError } = await supabase
+        .from('songs')
+        .update({ comments: updatedComments })
+        .eq('id', id);
+
+      if (deleteError) throw deleteError;
+
+      setSong({ ...song, comments: updatedComments }); // Update local state
+      setMessage('Comment deleted successfully!');
+    } catch (error) {
+      setMessage('Error deleting comment: ' + error.message);
+    }
+  };
+
   useEffect(() => {
     fetchSong();
   }, [id]);
@@ -136,8 +172,8 @@ function CurrentSong() {
       <p><strong>Likes:</strong> {song.likes}</p>
 
       {/* Like Button */}
-      <button onClick={handleLike} disabled={liked}>
-        {liked ? 'Liked' : 'Like'}
+      <button onClick={handleLikeToggle}>
+        {liked ? 'Unlike' : 'Like'}
       </button>
 
       {/* Comment Section */}
@@ -145,7 +181,10 @@ function CurrentSong() {
         <h2>Comments</h2>
         <ul>
           {song.comments?.map((c, index) => (
-            <li key={index}>{c}</li>
+            <li key={index}>
+              {c}
+              <button onClick={() => handleDeleteComment(index)}>Delete</button>
+            </li>
           ))}
         </ul>
         <textarea
