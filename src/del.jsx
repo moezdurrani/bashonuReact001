@@ -1,152 +1,112 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { Link } from 'react-router-dom';
 
-function MyProfile({ session }) {
-  const [user, setUser] = useState(null);
+function UserSongs() {
+  const { username } = useParams(); // Get the username from the URL
+  const [songs, setSongs] = useState([]);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [username, setUsername] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
+  const [error, setError] = useState('');
+
+  const fetchUserSongsAndImage = async () => {
+    setLoading(true);
+    setError(''); // Reset error message
+
+    try {
+      console.log(`Fetching user data for username: ${username}`); // Debug log
+
+      // Fetch user profile
+      const { data: user, error: userError } = await supabase
+        .from('user_profiles')
+        .select('id, profile_image_url')
+        .eq('username', username)
+        .single();
+
+      if (userError) {
+        console.error('Error fetching user:', userError.message);
+        setError('User not found.');
+        setSongs([]);
+        setLoading(false);
+        return;
+      }
+
+      console.log('User data fetched:', user); // Debug log
+
+      // Try fetching profile image
+      if (user.profile_image_url) {
+        console.log(`Fetching profile image for user: ${username}`); // Debug log
+        try {
+          const { data: publicUrl } = supabase.storage
+            .from('user-images')
+            .getPublicUrl(user.profile_image_url);
+
+          setProfileImageUrl(publicUrl.publicUrl);
+        } catch (imageError) {
+          console.error('Error fetching profile image:', imageError.message);
+          setProfileImageUrl('/default-profile.png'); // Fallback to default
+        }
+      } else {
+        console.log('No profile image found for user, using default image.');
+        setProfileImageUrl('/default-profile.png'); // Fallback
+      }
+
+      // Fetch songs by user
+      console.log(`Fetching songs for user ID: ${user.id}`); // Debug log
+      const { data: songsData, error: songsError } = await supabase
+        .from('songs')
+        .select('id, title, singers(name), writers(name)')
+        .eq('user_id', user.id);
+
+      if (songsError) {
+        console.error('Error fetching songs:', songsError.message);
+        setError('Error fetching songs.');
+        setSongs([]);
+      } else {
+        console.log('Songs data fetched:', songsData); // Debug log
+        setSongs(songsData);
+      }
+    } catch (fetchError) {
+      console.error('Unexpected error:', fetchError.message); // Debug log
+      setError('An unexpected error occurred.');
+    }
+
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (session) {
-        setUser(session.user);
+    fetchUserSongsAndImage();
+  }, [username]);
 
-        // Fetch username
-        const { data: userProfile, error: userProfileError } = await supabase
-          .from('user_profiles')
-          .select('username')
-          .eq('id', session.user.id)
-          .single();
+  if (loading) return <p>Loading songs...</p>;
 
-        if (userProfileError) {
-          console.error('Error fetching username:', userProfileError.message);
-        } else {
-          setUsername(userProfile?.username || 'No username set');
-        }
+  if (error) return <p>{error}</p>;
 
-        // Fetch profile image
-        const { data: profileImageData, error: profileImageError } = await supabase
-          .storage
-          .from('user-images')
-          .download(`profile-images/${session.user.id}.png`);
-
-        if (profileImageError) {
-          console.log('No profile image found, using default.');
-          setProfileImage(null);
-        } else {
-          const url = URL.createObjectURL(profileImageData);
-          setProfileImage(url);
-        }
-      }
-      setLoading(false);
-    };
-
-    fetchUserData();
-  }, [session]);
-
-  const handleUploadProfileImage = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-      const { error: uploadError } = await supabase.storage
-        .from('user-images')
-        .upload(`profile-images/${session.user.id}.png`, file, {
-          upsert: true,
-        });
-
-      if (uploadError) throw uploadError;
-
-      setMessage('Profile image uploaded successfully.');
-      const { data: newProfileImage, error: downloadError } = await supabase
-        .storage
-        .from('user-images')
-        .download(`profile-images/${session.user.id}.png`);
-
-      if (downloadError) throw downloadError;
-
-      const url = URL.createObjectURL(newProfileImage);
-      setProfileImage(url);
-    } catch (error) {
-      console.error('Error uploading profile image:', error.message);
-      setMessage('Error uploading profile image.');
-    }
-  };
-
-  const handleDeleteProfileImage = async () => {
-    try {
-      const { error: deleteError } = await supabase.storage
-        .from('user-images')
-        .remove([`profile-images/${session.user.id}.png`]);
-
-      if (deleteError) throw deleteError;
-
-      setProfileImage(null);
-      setMessage('Profile image deleted successfully.');
-    } catch (error) {
-      console.error('Error deleting profile image:', error.message);
-      setMessage('Error deleting profile image.');
-    }
-  };
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      setMessage('Error logging out: ' + error.message);
-    } else {
-      setUser(null);
-      setMessage('Successfully logged out!');
-      window.location.reload(); // Reload the page to reset the app state
-    }
-  };
-
-  if (loading) return <p>Loading...</p>;
+  if (!songs.length) return <p>No songs found for this user.</p>;
 
   return (
     <div>
-      {!user ? (
-        <div>
-          <h1>Login</h1>
-          <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
-        </div>
-      ) : (
-        <div>
-          <h1>Welcome, {user.email}</h1>
-          <p><strong>Username:</strong> {username}</p>
+      <h1>{username}'s Songs</h1>
+      {profileImageUrl && (
+        <div style={{ marginBottom: '20px' }}>
           <img
-            src={profileImage || 'https://via.placeholder.com/150'}
-            alt="Profile"
-            style={{ width: '150px', height: '150px', borderRadius: '50%' }}
+            src={profileImageUrl}
+            alt={`${username}'s profile`}
+            style={{ width: '100px', height: '100px', borderRadius: '50%' }}
           />
-          <div>
-            <label htmlFor="profile-image-upload">Upload New Profile Image:</label>
-            <input
-              id="profile-image-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleUploadProfileImage}
-            />
-            <button onClick={handleDeleteProfileImage}>Delete Profile Image</button>
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <Link to="/my-songs" style={{ marginRight: '10px' }}>
-              View My Songs
-            </Link>
-            <Link to="/create-song">
-              Create a Song
-            </Link>
-          </div>
-          <button onClick={handleLogout}>Logout</button>
-          <p>{message}</p>
         </div>
       )}
+      <ul>
+        {songs.map((song) => (
+          <li key={song.id}>
+            <Link to={`/song/${song.id}`}>
+              {song.title} - Singer: {song.singers?.name || 'Unknown'}, Writer: {song.writers?.name || 'Unknown'}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default MyProfile;
+export default UserSongs;

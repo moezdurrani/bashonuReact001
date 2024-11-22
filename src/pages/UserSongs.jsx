@@ -6,9 +6,12 @@ function UserSongs() {
   const { username } = useParams(); // Get the username from the URL
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
+  const [error, setError] = useState('');
 
   const fetchUserSongs = async () => {
     setLoading(true);
+    setError(''); // Reset error message
 
     try {
       const { data: user, error: userError } = await supabase

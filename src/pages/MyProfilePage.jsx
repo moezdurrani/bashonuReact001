@@ -21,7 +21,7 @@ function MyProfile({ session }) {
         // Fetch username
         const { data: userProfile, error: userProfileError } = await supabase
           .from('user_profiles')
-          .select('username')
+          .select('username, profile_image_url')
           .eq('id', session.user.id)
           .single();
 
@@ -29,20 +29,15 @@ function MyProfile({ session }) {
           console.error('Error fetching username:', userProfileError.message);
         } else {
           setUsername(userProfile?.username || 'No username set');
-        }
 
-        // Fetch profile image
-        const { data: profileImageData, error: profileImageError } = await supabase
-          .storage
-          .from('user-images')
-          .download(`profile-images/${session.user.id}.png`);
-
-        if (profileImageError) {
-          console.log('No profile image found, using default.');
-          setProfileImage(null);
-        } else {
-          const url = URL.createObjectURL(profileImageData);
-          setProfileImage(url);
+          if (userProfile.profile_image_url) {
+            const { data: publicUrlData } = supabase.storage
+              .from('user-images')
+              .getPublicUrl(userProfile.profile_image_url);
+            setProfileImage(publicUrlData.publicUrl);
+          } else {
+            setProfileImage('https://via.placeholder.com/150');
+          }
         }
       }
       setLoading(false);
@@ -78,13 +73,13 @@ function MyProfile({ session }) {
     }
   
     try {
-      const filePath = `profile-images/${session.user.id}.png`;
+      const filePath = `${session.user.id}/profile.jpg`;
   
       // Delete any existing profile image
       await supabase.storage.from('user-images').remove([filePath]);
   
       // Upload the new profile image
-      const { data, error } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('user-images')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -92,21 +87,26 @@ function MyProfile({ session }) {
           contentType: file.type, // Set MIME type for the file
         });
   
-      if (error) {
-        throw error;
+      if (uploadError) {
+        throw uploadError;
       }
   
-      // Fetch the new image URL
-      const { data: imageData, error: fetchError } = await supabase
-        .storage
+      // Update the user_profiles table
+      const { error: updateError } = await supabase
+        .from('user_profiles')
+        .update({ profile_image_url: filePath })
+        .eq('id', session.user.id);
+  
+      if (updateError) {
+        throw updateError;
+      }
+  
+      // Fetch the updated image URL with a timestamp query parameter
+      const { data: imageData } = supabase.storage
         .from('user-images')
         .getPublicUrl(filePath);
   
-      if (fetchError) {
-        throw fetchError;
-      }
-  
-      setProfileImage(imageData.publicUrl);
+      setProfileImage(`${imageData.publicUrl}?t=${new Date().getTime()}`);
       setMessage('Profile image uploaded successfully!');
     } catch (error) {
       console.error('Error uploading profile image:', error.message);
@@ -114,17 +114,25 @@ function MyProfile({ session }) {
     }
   };
   
-  
 
   const handleDeleteProfileImage = async () => {
     try {
+      const filePath = `${session.user.id}/profile.jpg`;
+
       const { error: deleteError } = await supabase.storage
         .from('user-images')
-        .remove([`profile-images/${session.user.id}.png`]);
+        .remove([filePath]);
 
       if (deleteError) throw deleteError;
 
-      setProfileImage(null);
+      const { error: updateError } = await supabase
+        .from('user_profiles')
+        .update({ profile_image_url: null })
+        .eq('id', session.user.id);
+
+      if (updateError) throw updateError;
+
+      setProfileImage('https://via.placeholder.com/150'); // Reset to default image
       setMessage('Profile image deleted successfully.');
     } catch (error) {
       console.error('Error deleting profile image:', error.message);
@@ -171,7 +179,7 @@ function MyProfile({ session }) {
             <button onClick={() => setEditingUsername(true)}>Edit Username</button>
           )}
           <img
-            src={profileImage || 'https://via.placeholder.com/150'}
+            src={profileImage}
             alt="Profile"
             style={{ width: '150px', height: '150px', borderRadius: '50%' }}
           />
