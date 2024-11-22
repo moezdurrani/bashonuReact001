@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
@@ -13,7 +13,37 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import UserSongs from './pages/UserSongs';
 import Trending from './pages/Trending';
-import logoImage from './assets/bashonu1.png'; // Import the logo image
+import logoImage from './assets/bashonu1.png';
+
+
+function Header() {
+  const location = useLocation();
+
+  return (
+    <header className="header">
+      <div className="logo">
+        <img
+          src={logoImage}
+          alt="My Music App Logo"
+          style={{
+            height: '40px', // Increase height
+            width: 'auto', // Maintain aspect ratio
+            marginRight: '10px', // Add spacing between logo and text
+          }}
+        />
+        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}></span>
+      </div>
+      <nav className="nav-links">
+        <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
+        <Link to="/trending" className={location.pathname === '/trending' ? 'active' : ''}>Trending</Link>
+        <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link>
+        <Link to="/my-profile" className={location.pathname === '/my-profile' ? 'active' : ''}>My Profile</Link>
+      </nav>
+    </header>
+  );
+}
+
+
 
 function App() {
   const [session, setSession] = useState(null);
@@ -38,22 +68,7 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <header className="header">
-          {/* Replace text logo with an image */}
-          <Link to="/">
-            <img
-              src={logoImage}
-              alt="My Music App Logo"
-              style={{ height: '50px', objectFit: 'contain' }} // Adjust the styles as needed
-            />
-          </Link>
-          <nav className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/trending">Trending</Link>
-            <Link to="/about">About</Link>
-            <Link to="/my-profile">My Profile</Link>
-          </nav>
-        </header>
+        <Header />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />

@@ -1,23 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
+  font-family: "Comfortaa",Arial, sans-serif;
+  background-color: rgb(242,244,247);
+  color: #ffffff;
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #1a202c;
+  padding: 1rem 2rem; /* Add enough padding to prevent cutting */
+  background-color: rgb(255, 255, 255);
   color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  box-sizing: border-box; /* Ensures padding and borders don't affect width */
 }
 
+
 .header .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 40px;
+  height: auto;
+  margin-right: 10px; /* Space between the logo and text */
 }
 
 .nav-links {
@@ -25,34 +41,86 @@ body {
   gap: 1rem;
 }
 
+.nav-links a.active {
+  color: rgb(44, 100, 246); /* Active link color */
+  text-decoration: underline; /* Optional: To visually differentiate active links */
+}
+
+.main-content {
+  padding-top: 6rem; /* Ensures content doesn't overlap with the fixed header */
+}
+
 .nav-links a,
-.nav-links button {
-  color: white;
-  text-decoration: none;
+.nav-links button,
+li a {
+  color: rgb(99, 99, 99);
+  text-decoration: none; /* Removes underline */
   font-weight: bold;
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0.9rem 1.6rem; /* Ensure consistent padding */
+  border-radius: 5px; /* Optional: Add rounded corners */
+  transition: color 0.3s ease; /* Smooth color transition */
+  display: inline-block;
 }
 
 .nav-links a:hover,
 .nav-links button:hover {
-  color: #61dafb;
-}
-
-.main-content {
-  padding: 2rem;
+  background-color: rgb(242, 242, 242); /* Hover background color */
 }
 
 ul {
   list-style-type: none;
   padding: 0;
+  max-width: 800px; /* Limit the width of the song list */
+  margin: 0 auto; /* Center the song list container */
 }
 
-li {
-  margin: 1rem 0;
-  padding: 1rem;
-  background: white;
-  border: 1px solid #ddd;
+ul li {
+  margin: 0.5rem 0;
+  padding: 0rem 1rem; 
+  background: rgb(255, 255, 255);
+  border: 0.5px solid #ddd;
   border-radius: 8px;
+  box-shadow: 0 0.8px 0.8px rgba(0, 0, 0, 0.15);
+  text-align: left; /* Align content inside the song item to the left */
+  overflow-x: auto; /* Enable horizontal scrolling if content overflows */
+  white-space: nowrap; 
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; /* Smooth transition */
+}
+
+li:hover {
+  background-color: rgb(242, 242, 242); /* Subtle background color change */
+  transform: scale(1.0);
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+
+ul li h2 {
+  margin: 0; /* Removed bottom margin */
+  font-size: 1.1rem; /* Increase font size */
+  font-weight: bold;
+  color: #494949; 
+}
+
+
+ul li p {
+  margin: 0.0rem 0 0; /* Adds slight spacing between lines */
+  font-size: 0.9rem; /* Adjust font size */
+  color: #727272;  
+  overflow-x: auto; /* Ensure text can scroll horizontally */
+  white-space: nowrap; /* Keep text on one line */
+}
+
+
+
+@media (max-width: 600px) {
+  ul {
+    max-width: 90%; /* Reduces the width for smaller screens */
+  }
+
+  li p {
+    font-size: 0.85rem; /* Adjusts text size for smaller screens */
+  }
 }

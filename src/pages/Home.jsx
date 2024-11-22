@@ -29,19 +29,21 @@ function Home() {
 
   return (
     <div>
-      <h1>All Songs</h1>
       {songs.length > 0 ? (
         <ul>
-          {songs.map((song) => (
-            <li key={song.id}>
-              <Link to={`/song/${song.id}`}>
-                <h2>{song.title}</h2>
-              </Link>
-              <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
-              <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
-            </li>
-          ))}
-        </ul>
+        {songs.map((song) => (
+          <li key={song.id}>
+            <Link to={`/song/${song.id}`}>
+              <h2>{song.title}</h2>
+              <p>
+                <strong>Singer:</strong> {song.singers?.name || 'Unknown'} |{' '}
+                <strong>Writer:</strong> {song.writers?.name || 'Unknown'}
+              </p>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      
       ) : (
         <p>No songs found.</p>
       )}
