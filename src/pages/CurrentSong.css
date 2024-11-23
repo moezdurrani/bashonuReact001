@@ -266,6 +266,11 @@
   margin-left: auto; /* Center horizontally */
   margin-right: auto;
   box-sizing: border-box; /* Ensure padding and border are included in width */
+
+  display: flex;
+  flex-direction: column; /* Stack buttons on smaller screens */
+  gap: 10px; /* Add spacing between buttons */
+  align-items: stretch; /* Ensure buttons take full width */
 }
 
 .edit-song-form label {
@@ -291,11 +296,15 @@
 
 /* Khowar and English Lyrics Textareas */
 .edit-song-form textarea {
-  height: 250px; /* Default height */
-  min-height: 150px; /* Ensure minimum height */
-  text-align: left; /* Align text to the left */
-  overflow-wrap: break-word; /* Prevent text overflow */
-  word-wrap: break-word;
+  height: 250px; /* Set a reasonable default height */
+  min-height: 150px; /* Ensure a minimum height */
+  max-height: 300px; /* Set a maximum height */
+  overflow-wrap: break-word; /* Prevent text from breaking layout */
+  word-wrap: break-word; /* Ensure long words wrap properly */
+  text-align: center; /* Align text to the left */
+  font-size: 1rem; /* Keep font size consistent */
+  box-sizing: border-box; /* Include padding in width/height */
+  resize: none; /* Disable manual resizing */
 }
 
 .edit-song-form button {
