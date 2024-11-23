@@ -1,54 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
 
 .current-song-page {
-  font-family: "Comfortaa", Arial, sans-serif;
-  padding: 2rem;
-  background-color: rgb(242, 244, 247);
-  max-width: 800px;
-  margin: 0 auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: #333;
-}
-
-.current-song-page h1 {
-  text-align: center;
-  color: rgb(40, 100, 246);
-  margin-bottom: 1rem;
-}
-
-.current-song-page p {
-  font-size: 1rem;
-  margin: 0.5rem 0;
-  color: #494949;
-}
+    padding: 2rem;
+    font-family: "Comfortaa", Arial, sans-serif;
+    background-color: rgb(255, 255, 255);
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .current-song-page h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: rgb(40, 100, 246);
+  }
+  
+  .current-song-page p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #494949;
+  }
 
 .current-song-page p strong {
   font-weight: bold;
 }
 
-.current-song-page .lyrics-toggle-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin: 1rem 0;
-}
-
 .current-song-page button {
-  padding: 0.8rem 1.2rem;
-  border: none;
-  border-radius: 5px;
-  background-color: rgb(40, 100, 246);
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background-color 0.3s ease;
-}
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(40, 100, 246);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.3s ease;
+  }
 
-.current-song-page button:hover {
-  background-color: rgb(30, 80, 200);
-}
+  .current-song-page button:hover {
+    background-color: rgb(30, 80, 200);
+  }
+  
+
+  .current-song-page .lyrics-toggle-buttons {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0; /* No gap between buttons for seamless look */
+    border: 1px solid #ddd; /* Border for the button container */
+    background-color: rgb(242, 244, 247); /* Light background for the button container */
+    border-radius: 5px;
+    overflow: hidden; /* Ensures border-radius applies to both buttons */
+  }
+  
+  .current-song-page .lyrics-toggle-buttons button {
+    flex: 1; /* Ensures buttons are of equal width */
+    padding: 0.8rem 1rem;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    background-color: transparent; /* Default background matches container */
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .current-song-page .lyrics-toggle-buttons button:hover {
+    background-color: rgb(220, 220, 220); /* Hover effect */
+  }
+  
+  .current-song-page .lyrics-toggle-buttons button.active {
+    background-color: rgb(40, 100, 246); 
+    color: #fff; /* White text for active button */
+    font-weight: bold; /* Emphasize the active button */
+  }
+
 
 .current-song-page .like-button {
   margin-top: 1rem;
@@ -66,20 +96,50 @@
   resize: none;
 }
 
-.current-song-page .comments-section {
-  margin-top: 2rem;
-}
-
-.current-song-page .comments-section h2 {
-  font-size: 1.2rem;
-  color: #494949;
-}
-
-.current-song-page .comments-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
+.current-song-page .song-details {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .current-song-page .song-details button {
+    margin-top: 1rem;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(40, 100, 246);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .current-song-page .song-details button:hover {
+    background-color: rgb(30, 80, 200);
+  }
+  
+  .current-song-page .comments-section {
+    margin-top: 2rem;
+  }
+  
+  .current-song-page .comments-section h2 {
+    font-size: 1.2rem;
+    color: #494949;
+    text-align: center;
+  }
+  
+  .current-song-page .comments-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  .current-song-page .comments-section ul li {
+    background: rgb(255, 255, 255);
+    margin-bottom: 0.5rem;
+    padding: 0.8rem;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
 
 .current-song-page .comments-section ul li {
   background: rgb(255, 255, 255);
@@ -98,6 +158,42 @@
 .current-song-page .poster-link:hover {
   color: rgb(30, 80, 200);
 }
+
+/* Lyrics Section */
+.current-song-page .lyrics-section {
+    margin-top: 1rem;
+    background-color: rgb(245, 245, 245); /* Light gray background */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 500px; /* Fixed height for the lyrics section */
+    overflow-y: auto; /* Enable vertical scrolling */
+    text-align: center; /* Center the lyrics container */
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Horizontally center content */
+    align-items: center; /* Vertically center content */
+  }
+  
+  .current-song-page .lyrics-section .lyrics {
+    white-space: pre-wrap; /* Preserve white spaces and line breaks */
+    line-height: 1.6;
+    text-align: left; /* Ensure text within the lyrics is left-aligned */
+    max-width: 90%; /* Optional: Restrict the width of lyrics */
+  }
+  
+  .current-song-page .lyrics-section .khowar-lyrics {
+    font-family: 'Noto Nastaliq Urdu', serif;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .current-song-page .lyrics-section .english-lyrics {
+    font-family: 'Comfortaa', Arial, sans-serif;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  
 
 @media (max-width: 600px) {
   .current-song-page {
@@ -118,3 +214,5 @@
     height: 80px;
   }
 }
+
+

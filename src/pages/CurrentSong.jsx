@@ -167,58 +167,87 @@ function CurrentSong() {
   if (!song) return <p>Song not found.</p>;
 
   return (
-    <div class="current-song-page">
-      <h1>{song.title}</h1>
-      <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
-      <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
-      <p>
-        <strong>Posted by:</strong>{' '}
-        <span
-          onClick={() =>
-            song?.user_profiles?.username
-              ? navigate(`/user/${song.user_profiles.username}`)
-              : console.log('Username not found')
-          }
-          style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
-        >
-          {song.user_profiles?.username || 'Unknown'}
-        </span>
-      </p>
+    
+    <div className="current-song-page">
+  <h1>{song.title}</h1>
 
-      {/* Lyrics Toggle Buttons */}
-      <div>
-        <button onClick={() => setLyricsType('khowar')}>Show Khowar Lyrics</button>
-        <button onClick={() => setLyricsType('english')}>Show English Lyrics</button>
+  {/* Lyrics Toggle Buttons */}
+  <div className="lyrics-toggle-buttons">
+    <button
+      onClick={() => setLyricsType('khowar')}
+      className={lyricsType === 'khowar' ? 'active' : ''}
+    >
+      Khowar Lyrics
+    </button>
+    <button
+      onClick={() => setLyricsType('english')}
+      className={lyricsType === 'english' ? 'active' : ''}
+    >
+      English Lyrics
+    </button>
+  </div>
+
+  {/* Display Lyrics Based on Selection */}
+  <div className="lyrics-section">
+    {lyricsType === 'khowar' && (
+      <div className="lyrics khowar-lyrics">
+        <pre style={{ fontFamily: 'Noto Nastaliq Urdu, serif' }}>
+          {song.khowar_lyrics}
+        </pre>
       </div>
-
-      {/* Display Lyrics Based on Selection */}
-      {lyricsType === 'khowar' && <p><strong>Khowar Lyrics:</strong> {song.khowar_lyrics}</p>}
-      {lyricsType === 'english' && <p><strong>English Lyrics:</strong> {song.english_lyrics}</p>}
-
-      <p><strong>Likes:</strong> {song.likes}</p>
-
-      {/* Like Button */}
-      <button onClick={handleLikeToggle}>{liked ? 'Unlike' : 'Like'}</button>
-
-      {/* Comment Section */}
-      <div>
-        <h2>Comments</h2>
-        <ul>
-          {song.comments?.map((c, index) => (
-            <li key={index}>{c}</li>
-          ))}
-        </ul>
-        <textarea
-          placeholder="Add a comment"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <button onClick={handleAddComment}>Add Comment</button>
+    )}
+    {lyricsType === 'english' && (
+      <div className="lyrics english-lyrics">
+        <pre>{song.english_lyrics}</pre>
       </div>
+    )}
+  </div>
 
-      {message && <p>{message}</p>}
-    </div>
+  <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
+  <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
+  <p>
+    <strong>Posted by:</strong>{' '}
+    <span
+      onClick={() =>
+        song?.user_profiles?.username
+          ? navigate(`/user/${song.user_profiles.username}`)
+          : console.log('Username not found')
+      }
+      style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
+    >
+      {song.user_profiles?.username || 'Unknown'}
+    </span>
+  </p>
+
+  {/* Other Details */}
+  <div className="song-details">
+    <p><strong>Likes:</strong> {song.likes}</p>
+    <button onClick={handleLikeToggle}>{liked ? 'Unlike' : 'Like'}</button>
+  </div>
+
+  {/* Comment Section */}
+  <div>
+    <h2>Comments</h2>
+    <ul>
+      {song.comments?.map((c, index) => (
+        <li key={index}>{c}</li>
+      ))}
+    </ul>
+    <textarea
+      placeholder="Add a comment"
+      value={comment}
+      onChange={(e) => setComment(e.target.value)}
+    />
+    <button onClick={handleAddComment}>Add Comment</button>
+  </div>
+
+  {message && <p>{message}</p>}
+</div>
+
+
+
   );
+
 }
 
 export default CurrentSong;

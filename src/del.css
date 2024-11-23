@@ -1,164 +1,129 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+.current-song-page {
+  padding: 2rem;
+  font-family: "Comfortaa", Arial, sans-serif;
+  background-color: rgb(255, 255, 255);
+  color: #333;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-body {
-    font-family: "Comfortaa",Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: rgb(242, 244, 247);
-    color: #333;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-top: 1.5rem;
-    color: #1a202c;
-  }
-  
-  section {
-    margin: 2rem auto;
-    max-width: 800px;
-    padding: 1.5rem;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  section h2 {
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-    color: #1a202c;
-    text-align: center;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 0.5rem;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  ul li {
-    padding: 0.8rem 1rem;
-    margin: 0.5rem 0;
-    background: rgb(242, 244, 247);
-    border-radius: 8px;
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-  }
-  
-  ul li:hover {
-    background: rgb(230, 236, 245);
-    transform: scale(1.02);
-  }
-  
-  ul li strong {
-    color: #1a202c;
-    font-size: 1rem;
-  }
-  
-  ul li em {
-    color: #555;
-    font-style: normal;
-    font-weight: bold;
-  }
-  
-  ul li:last-child {
-    margin-bottom: 0;
-  }
-  
-  ul li br {
-    margin-bottom: 0.5rem;
-  }
-  
-  @media (max-width: 768px) {
-    section {
-      padding: 1rem;
-      max-width: 90%;
-    }
-  
-    section h2 {
-      font-size: 1.3rem;
-    }
-  
-    ul li {
-      padding: 0.5rem 0.8rem;
-    }
-  
-    ul li strong {
-      font-size: 0.9rem;
-    }
-  
-    ul li em {
-      font-size: 0.8rem;
-    }
-  }
-  
+.current-song-page h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: rgb(40, 100, 246);
+}
 
+.current-song-page p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  color: #494949;
+}
 
+.current-song-page .lyrics-toggle-buttons {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0; /* No gap between buttons for seamless look */
+  border: 1px solid #ddd; /* Border for the button container */
+  background-color: rgb(242, 244, 247); /* Light background for the button container */
+  border-radius: 5px;
+  overflow: hidden; /* Ensures border-radius applies to both buttons */
+}
 
+.current-song-page .lyrics-toggle-buttons button {
+  flex: 1; /* Ensures buttons are of equal width */
+  padding: 0.8rem 1rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  background-color: transparent; /* Default background matches container */
+  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
+.current-song-page .lyrics-toggle-buttons button:hover {
+  background-color: rgb(220, 220, 220); /* Hover effect */
+}
 
+.current-song-page .lyrics-toggle-buttons button.active {
+  background-color: rgb(40, 100, 246); 
+  color: #fff; /* White text for active button */
+  font-weight: bold; /* Emphasize the active button */
+}
 
+/* Lyrics Section */
+.current-song-page .lyrics-section {
+  margin-top: 1rem;
+  background-color: rgb(245, 245, 245); /* Light gray background */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 300px; /* Fixed height for the lyrics section */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
 
+.current-song-page .lyrics-section .lyrics {
+  white-space: pre-wrap; /* Preserve white spaces and line breaks */
+  line-height: 1.6;
+  text-align: left;
+}
 
+.current-song-page .lyrics-section .khowar-lyrics {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 1.2rem;
+  color: #333;
+}
 
+.current-song-page .lyrics-section .english-lyrics {
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-size: 1rem;
+  color: #333;
+}
 
+.current-song-page .song-details {
+  margin-top: 2rem;
+  text-align: center;
+}
 
+.current-song-page .song-details button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(40, 100, 246);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
 
+.current-song-page .song-details button:hover {
+  background-color: rgb(30, 80, 200);
+}
 
+.current-song-page .comments-section {
+  margin-top: 2rem;
+}
 
+.current-song-page .comments-section h2 {
+  font-size: 1.2rem;
+  color: #494949;
+  text-align: center;
+}
 
-  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+.current-song-page .comments-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
 
-
-.trendingPage {
-    padding: 2rem;
-    background-color: rgb(242, 244, 247);
-    font-family: "Comfortaa",Arial, sans-serif;
-  }
-  
-  .trendingPage h1 {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: #333;
-  }
-  
-  .trendingPage section {
-    margin-bottom: 2rem;
-  }
-  
-  .trendingPage h2 {
-    font-size: 2rem;
-    color: #444;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .trendingPage ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .trendingPage li {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .trendingPage li strong {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #222;
-  }
-  
-  .trendingPage li em {
-    color: #666;
-    font-style: normal;
-  }
-  
+.current-song-page .comments-section ul li {
+  background: rgb(255, 255, 255);
+  margin-bottom: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
