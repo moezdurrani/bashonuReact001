@@ -265,6 +265,7 @@
   max-width: 600px; /* Limit form width */
   margin-left: auto; /* Center horizontally */
   margin-right: auto;
+  box-sizing: border-box; /* Ensure padding and border are included in width */
 }
 
 .edit-song-form label {
@@ -277,25 +278,24 @@
 
 .edit-song-form input,
 .edit-song-form textarea {
-  width: 100%; /* Full-width fields */
+  width: 100%; /* Full width within the container */
+  box-sizing: border-box; /* Include padding and border in width calculation */
   padding: 0.8rem; /* Inner padding */
   font-size: 1rem; /* Readable font size */
   border: 1px solid #ccc; /* Subtle border */
   border-radius: 5px; /* Rounded corners */
   margin-bottom: 1rem; /* Space below fields */
   resize: none; /* Prevent resizing for textarea */
+  overflow-wrap: break-word; /* Prevent long words from breaking layout */
 }
 
+/* Khowar and English Lyrics Textareas */
 .edit-song-form textarea {
-  width: 100%; /* Full width */
-  padding: 0.8rem; /* Inner padding */
-  font-size: 1rem; /* Readable font size */
-  border: 1px solid #ccc; /* Subtle border */
-  border-radius: 5px; /* Rounded corners */
-  margin-bottom: 1rem; /* Space below fields */
-  resize: vertical; /* Allow vertical resizing if needed */
-  height: 250px; /* Increased default height */
-  text-align: center;
+  height: 250px; /* Default height */
+  min-height: 150px; /* Ensure minimum height */
+  text-align: left; /* Align text to the left */
+  overflow-wrap: break-word; /* Prevent text overflow */
+  word-wrap: break-word;
 }
 
 .edit-song-form button {
@@ -367,5 +367,15 @@
 
   .current-song-page .lyrics-section .lyrics {
     font-size: 1rem; /* Adjust font size for smaller screens */
+  }
+
+  .edit-song-form textarea {
+    height: 300px; /* Set a slightly smaller height for mobile */
+    min-height: 150px; /* Ensure a reasonable minimum height */
+    font-size: 0.9rem; /* Adjust font size for readability */
+  }
+
+  .edit-song-form {
+    padding: 1rem; /* Reduce padding on smaller screens */
   }
 }
