@@ -1,0 +1,89 @@
+.user-songs-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Comfortaa", Arial, sans-serif;
+  background-color: #ffffff; /* Light background for the page */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.user-songs-page h1 {
+  color: #2864f6; /* Primary color for heading */
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.user-songs-page img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd; /* Border around the profile image */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.user-songs-page ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.user-songs-page ul li {
+  background-color: rgb(242, 242, 242);
+  margin-bottom: 10px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-songs-page ul li:hover {
+  transform: scale(1); /* Slight scaling on hover */
+  background-color: rgb(224, 224, 224);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Deeper shadow on hover */
+}
+
+.user-songs-page ul li a {
+  text-decoration: none;
+  color: #494949;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.user-songs-page ul li a:hover {
+  color: #2864f6; /* Change link color on hover */
+}
+
+.user-songs-page .error-message {
+  color: red;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+.user-songs-page .loading-message {
+  font-size: 1.2rem;
+  color: #494949;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .user-songs-page {
+    padding: 15px;
+  }
+
+  .user-songs-page h1 {
+    font-size: 1.5rem;
+  }
+
+  .user-songs-page ul li {
+    padding: 10px 15px;
+  }
+
+  .user-songs-page ul li a {
+    font-size: 1rem;
+  }
+}

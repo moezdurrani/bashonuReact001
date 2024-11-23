@@ -225,11 +225,7 @@ function CurrentSong() {
               ? navigate(`/user/${song.user_profiles.username}`)
               : console.log("Username not found")
           }
-          style={{
-            color: "blue",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
+          className="poster-link"
         >
           {song.user_profiles?.username || "Unknown"}
         </span>

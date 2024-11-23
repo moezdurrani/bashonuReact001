@@ -176,17 +176,18 @@
 
 /* Lyrics Section */
 .current-song-page .lyrics-section {
-  margin-top: 1rem;
+  margin-top: 1rem; /* Add space above the lyrics section */
+  padding: 2rem 1rem; /* Add more padding inside the section */
   background-color: rgb(245, 245, 245); /* Light gray background */
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 1rem;
   max-height: 500px; /* Fixed height for the lyrics section */
   overflow-y: auto; /* Enable vertical scrolling */
   text-align: center; /* Center the lyrics container */
   display: flex; /* Flexbox for centering */
   justify-content: center; /* Horizontally center content */
-  align-items: center; /* Vertically center content */
+  align-items: flex-start; /* Align the content to the top inside the container */
+  position: relative; /* Ensure the container respects padding/margin */
 }
 
 .current-song-page .lyrics-section .lyrics {
@@ -228,6 +229,25 @@
   font-size: 1.2rem; /* Adjust font size for the like count */
   font-weight: bold; /* Make the number more prominent */
   color: #333; /* Optional: Adjust color for better visibility */
+}
+
+.current-song-page .poster-link {
+  color: rgb(40, 100, 246); /* Default blue color */
+  text-decoration: none; /* Remove underline by default */
+  font-weight: bold; /* Make the link bold */
+  border-bottom: 2px solid transparent; /* Add a bottom border effect */
+  transition: color 0.3s ease, border-color 0.3s ease; /* Smooth hover transition */
+  cursor: pointer;
+}
+
+.current-song-page .poster-link:hover {
+  color: rgb(30, 80, 200); /* Darker blue on hover */
+  border-bottom: 2px solid rgb(30, 80, 200); /* Underline effect with color change */
+}
+
+.current-song-page .poster-link:active {
+  color: rgb(20, 60, 180); /* Even darker blue on click */
+  transform: scale(0.98); /* Slightly shrink on click for feedback */
 }
 
 @media (max-width: 600px) {
