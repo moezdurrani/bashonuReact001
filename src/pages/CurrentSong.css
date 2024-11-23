@@ -190,23 +190,28 @@
   position: relative; /* Ensure the container respects padding/margin */
 }
 
+/* Common styles for lyrics text */
 .current-song-page .lyrics-section .lyrics {
   white-space: pre-wrap; /* Preserve white spaces and line breaks */
-  line-height: 1.6;
-  text-align: left; /* Ensure text within the lyrics is left-aligned */
-  max-width: 90%; /* Optional: Restrict the width of lyrics */
+  word-wrap: break-word; /* Break long words to fit within the container */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  line-height: 1.6; /* Improve readability with better line spacing */
+  text-align: left; /* Ensure text is left-aligned */
+  max-width: 90%; /* Restrict the width of lyrics to 90% of the container */
 }
 
+/* Khowar Lyrics */
 .current-song-page .lyrics-section .khowar-lyrics {
-  font-family: "Noto Nastaliq Urdu", serif;
-  font-size: 1.2rem;
-  color: #333;
+  font-family: "Noto Nastaliq Urdu", serif; /* Use Noto Nastaliq for Khowar lyrics */
+  font-size: 1.2rem; /* Adjust font size for readability */
+  color: #333; /* Text color */
 }
 
+/* English Lyrics */
 .current-song-page .lyrics-section .english-lyrics {
-  font-family: "Comfortaa", Arial, sans-serif;
-  font-size: 1rem;
-  color: #333;
+  font-family: "Comfortaa", Arial, sans-serif; /* Use Comfortaa for English lyrics */
+  font-size: 1rem; /* Adjust font size */
+  color: #333; /* Text color */
 }
 
 .likes-container {
@@ -354,5 +359,13 @@
 
   .current-song-page textarea {
     height: 80px;
+  }
+
+  .current-song-page .lyrics-section {
+    padding: 1rem; /* Reduce padding for smaller screens */
+  }
+
+  .current-song-page .lyrics-section .lyrics {
+    font-size: 1rem; /* Adjust font size for smaller screens */
   }
 }
