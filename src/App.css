@@ -166,15 +166,15 @@ ul li p {
   white-space: nowrap; /* Keep text on one line */
 }
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   ul {
-    max-width: 90%; /* Reduces the width for smaller screens */
+    max-width: 90%;
   }
 
   li p {
-    font-size: 0.85rem; /* Adjusts text size for smaller screens */
+    font-size: 0.85rem;
   }
-}
+} */
 
 @media (max-width: 768px) {
   .menu-toggle {
