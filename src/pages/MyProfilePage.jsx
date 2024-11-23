@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Link } from 'react-router-dom';
+import './MyProfilePage.css';
 
 function MyProfile({ session }) {
   const [user, setUser] = useState(null);
@@ -18,7 +19,6 @@ function MyProfile({ session }) {
       if (session) {
         setUser(session.user);
 
-        // Fetch username
         const { data: userProfile, error: userProfileError } = await supabase
           .from('user_profiles')
           .select('username, profile_image_url')
@@ -71,41 +71,37 @@ function MyProfile({ session }) {
       setMessage('Please select a file to upload.');
       return;
     }
-  
+
     try {
       const filePath = `${session.user.id}/profile.jpg`;
-  
-      // Delete any existing profile image
+
       await supabase.storage.from('user-images').remove([filePath]);
-  
-      // Upload the new profile image
+
       const { error: uploadError } = await supabase.storage
         .from('user-images')
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: true, // Overwrites existing image
-          contentType: file.type, // Set MIME type for the file
+          upsert: true,
+          contentType: file.type,
         });
-  
+
       if (uploadError) {
         throw uploadError;
       }
-  
-      // Update the user_profiles table
+
       const { error: updateError } = await supabase
         .from('user_profiles')
         .update({ profile_image_url: filePath })
         .eq('id', session.user.id);
-  
+
       if (updateError) {
         throw updateError;
       }
-  
-      // Fetch the updated image URL with a timestamp query parameter
+
       const { data: imageData } = supabase.storage
         .from('user-images')
         .getPublicUrl(filePath);
-  
+
       setProfileImage(`${imageData.publicUrl}?t=${new Date().getTime()}`);
       setMessage('Profile image uploaded successfully!');
     } catch (error) {
@@ -113,7 +109,6 @@ function MyProfile({ session }) {
       setMessage('Error uploading profile image. Please try again.');
     }
   };
-  
 
   const handleDeleteProfileImage = async () => {
     try {
@@ -132,7 +127,7 @@ function MyProfile({ session }) {
 
       if (updateError) throw updateError;
 
-      setProfileImage('https://via.placeholder.com/150'); // Reset to default image
+      setProfileImage('https://via.placeholder.com/150');
       setMessage('Profile image deleted successfully.');
     } catch (error) {
       console.error('Error deleting profile image:', error.message);
@@ -147,25 +142,27 @@ function MyProfile({ session }) {
     } else {
       setUser(null);
       setMessage('Successfully logged out!');
-      window.location.reload(); // Reload the page to reset the app state
+      window.location.reload();
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="loading-message">Loading...</p>;
 
   return (
-    <div>
+    <div className="my-profile-page">
       {!user ? (
-        <div>
+        <div className="login-container">
           <h1>Login</h1>
           <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
         </div>
       ) : (
         <div>
           <h1>Welcome, {user.email}</h1>
-          <p><strong>Username:</strong> {username}</p>
+          <p>
+            <strong>Username:</strong> {username}
+          </p>
           {editingUsername ? (
-            <div>
+            <div className="edit-controls">
               <input
                 type="text"
                 value={newUsername}
@@ -178,31 +175,35 @@ function MyProfile({ session }) {
           ) : (
             <button onClick={() => setEditingUsername(true)}>Edit Username</button>
           )}
-          <img
-            src={profileImage}
-            alt="Profile"
-            style={{ width: '150px', height: '150px', borderRadius: '50%' }}
-          />
-          <div>
-            <label htmlFor="profile-image-upload">Upload New Profile Image:</label>
-            <input
-              id="profile-image-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleUploadProfileImage}
+          <div className="profile-container">
+            <img
+              src={profileImage}
+              alt="Profile"
+              className="profile-image"
             />
-            <button onClick={handleDeleteProfileImage}>Delete Profile Image</button>
+            <div>
+              <label htmlFor="profile-image-upload">
+                Upload New Profile Image:
+              </label>
+              <input
+                id="profile-image-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleUploadProfileImage}
+              />
+              <button onClick={handleDeleteProfileImage}>
+                Delete Profile Image
+              </button>
+            </div>
           </div>
-          <div style={{ marginBottom: '20px' }}>
-            <Link to="/my-songs" style={{ marginRight: '10px' }}>
-              View My Songs
-            </Link>
-            <Link to="/create-song">
-              Create a Song
-            </Link>
+          <div className="profile-links">
+            <Link to="/my-songs">View My Songs</Link>
+            <Link to="/create-song">Create a Song</Link>
           </div>
-          <button onClick={handleLogout}>Logout</button>
-          <p>{message}</p>
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+          <p className="message">{message}</p>
         </div>
       )}
     </div>

@@ -38,19 +38,19 @@
   
   .about-page .about-contact-link {
     font-size: 1.1rem;
-    color: rgb(40,100,246);
+    color: rgb(255, 255, 255);
     text-decoration: none;
     font-weight: bold;
     padding: 0.2rem 0.4rem; /* Ensure consistent spacing */
     border-radius: 5px; /* Optional: Add rounded corners */
     transition: all 0.3s ease-in-out; /* Smooth transition effect */
     display: inline-block; /* Allows padding to apply properly */
+    background-color: rgb(40,100,246);
   }
   
   .about-page .about-contact-link:hover {
-    color: #0056b3;
+    background-color: rgb(96, 140, 250);
     text-decoration: none; /* Prevent underline on hover */
-    background-color: rgb(231, 231, 231);
   }
   
   

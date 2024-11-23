@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+
+.my-profile-page {
+  font-family: "Comfortaa", Arial, sans-serif;
+  padding: 2rem;
+  background-color: rgb(255, 255, 255);
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.my-profile-page h1 {
+  text-align: center;
+  color: rgb(40, 100, 246);
+  margin-bottom: 1rem;
+}
+
+.my-profile-page p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+.my-profile-page .profile-container {
+    display: flex;
+    justify-content: center; /* Horizontally center the image */
+    align-items: center; /* Vertically align items (if needed) */
+    flex-direction: column; /* Stack items (image and buttons) */
+    margin-bottom: 1.5rem; /* Add spacing below the container */
+  }
+  
+
+.my-profile-page .profile-image {
+    width: 150px; /* Set the width */
+    height: 150px; /* Set a different height to avoid a perfect square */
+    border-radius: 50%; /* Apply the desired border radius */
+    object-fit: cover; /* Ensure the image fits well within the dimensions */
+    border: 2px solid #ccc; /* Optional: Add a border for better visibility */
+  }
+
+.my-profile-page button {
+  background-color: rgb(40, 100, 246);
+  width: 150px;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  margin: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.my-profile-page button:hover {
+  background-color: rgb(30, 80, 200);
+}
+
+.my-profile-page input {
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.5rem 0;
+}
+
+.my-profile-page label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.my-profile-page a {
+  text-decoration: none;
+  color: rgb(40, 100, 246);
+  font-weight: bold;
+  transition: color 0.3s ease;
+  margin-right: 10px;
+}
+
+.my-profile-page a:hover {
+  color: rgb(30, 80, 200);
+  text-decoration: underline;
+}
+
+.my-profile-page .message {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: green;
+  margin-top: 1rem;
+}
+
+.my-profile-page .profile-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.my-profile-page .logout-button {
+    background-color: rgb(200, 50, 50); /* Red color */
+    color: #fff;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .my-profile-page .logout-button:hover {
+    background-color: rgb(180, 40, 40); /* Darker red on hover */
+  }
+
+  .my-profile-page .profile-links {
+    display: flex;
+    justify-content: center; /* Center the links */
+    gap: 1rem; /* Add space between links */
+    margin: 1rem 0; /* Add spacing above and below */
+    background-color: rgb(240, 240, 240); /* Subtle background color */
+    padding: 0.8rem; /* Add padding inside the container */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+  }
+  
+  .my-profile-page .profile-links a {
+    text-decoration: none; /* Remove underline */
+    color: rgb(40, 100, 246); /* Link color */
+    font-weight: bold; /* Make the text bold */
+    padding: 0.5rem 1rem; /* Add padding to links */
+    background-color: #fff; /* White background for links */
+    border-radius: 3px; /* Slightly rounded corners for links */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .my-profile-page .profile-links a:hover {
+    background-color: rgb(40, 100, 246); /* Change background color on hover */
+    color: #fff; /* Change text color on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow on hover */
+  }
+  
+
+.my-profile-page .edit-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .my-profile-page {
+    padding: 1rem;
+    max-width: 90%;
+  }
+
+  .my-profile-page button {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .my-profile-page .profile-actions {
+    flex-direction: column;
+  }
+}
