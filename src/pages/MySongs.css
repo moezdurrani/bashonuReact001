@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+
+.my-songs-page {
+  font-family: "Comfortaa", Arial, sans-serif;
+  padding: 2rem;
+  background-color: rgb(255, 255, 255);
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.my-songs-page h1 {
+  text-align: center;
+  color: rgb(40, 100, 246);
+  margin-bottom: 1.5rem;
+}
+
+.my-songs-page ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.my-songs-page ul li {
+    margin: 0.5rem 0; /* Adjust the vertical space between list items */
+    padding: 0rem 1rem; /* Reduce padding to remove extra white space */
+    background-color: rgb(242, 242, 242);
+    border: 0.5px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0.8px 0.8px rgba(0, 0, 0, 0.15);
+    text-align: left;
+    overflow-x: auto; /* Allow horizontal scrolling for content overflow */
+    white-space: nowrap; /* Prevent line wrapping */
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  .my-songs-page ul li:hover {
+    background-color: rgb(255, 255, 255);
+    transform: scale(1.0);
+  }
+  
+  .my-songs-page ul li h2 {
+    margin: 0 0 0.5rem 0; /* Add spacing only below the title */
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #494949;
+  }
+
+  .my-songs-page ul li p {
+    margin: 0; /* Remove unnecessary margin */
+    font-size: 0.9rem;
+    color: #727272;
+    display: flex; /* Use flex to arrange singer and writer inline */
+    gap: 0.5rem; /* Add space between elements */
+    flex-wrap: nowrap; /* Prevent wrapping */
+    overflow-x: auto; /* Allow horizontal scrolling if content overflows */
+    white-space: nowrap; /* Prevent line breaks */
+    align-items: center; /* Vertically center content */
+  }
+  
+  .my-songs-page ul li .singer-writer {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+    color: #727272;
+    display: flex; /* Ensure singer and writer are on the same line */
+    gap: 0.5rem; /* Add spacing between elements */
+    align-items: center; /* Vertically align text */
+  }
+  
+  .my-songs-page ul li .singer-writer span {
+    white-space: nowrap; /* Prevent line wrapping */
+  }
+  
+  .my-songs-page ul li .singer-writer .separator {
+    font-weight: bold;
+    margin: 0 0.3rem;
+    color: #494949;
+  }
+
+  .my-songs-page ul li p .separator {
+    font-weight: bold;
+    color: #494949;
+  }
+  
+
+  .my-songs-page ul li p strong {
+    font-weight: bold;
+  }
+
+  .my-songs-page ul li .song-link {
+    text-decoration: none; /* Remove default underline */
+    color: inherit; /* Inherit the color from the parent */
+    display: block; /* Make the entire item clickable */
+  }
+  
+  .my-songs-page ul li .song-link:hover {
+    text-decoration: none;
+  }
+  
+
+@media (max-width: 600px) {
+  .my-songs-page {
+    padding: 1rem;
+    max-width: 90%;
+  }
+
+  .my-songs-page ul li h2 {
+    font-size: 1rem;
+  }
+
+  .my-songs-page ul li p {
+    font-size: 0.85rem;
+  }
+}

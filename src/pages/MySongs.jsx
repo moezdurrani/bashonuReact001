@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link } from 'react-router-dom'; // Import Link
+import './MySongs.css';
 
 function MySongs() {
   const [songs, setSongs] = useState([]);
@@ -36,17 +37,20 @@ function MySongs() {
   if (loading) return <p>Loading your songs...</p>;
 
   return (
-    <div>
+    <div className="my-songs-page">
       <h1>My Songs</h1>
       {songs.length > 0 ? (
         <ul>
           {songs.map((song) => (
             <li key={song.id}>
-              <Link to={`/song/${song.id}`}>
+              <Link to={`/song/${song.id}`} className="song-link">
                 <h2>{song.title}</h2>
+                <p>
+                  <strong>Singer:</strong> {song.singers?.name || 'Unknown'}
+                  <span className="separator"> | </span>
+                  <strong>Writer:</strong> {song.writers?.name || 'Unknown'}
+                </p>
               </Link>
-              <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
-              <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
             </li>
           ))}
         </ul>

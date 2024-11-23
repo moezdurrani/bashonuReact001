@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import './CurrentSong.css';
+
 
 function CurrentSong() {
   const { id } = useParams(); // Get the song ID from the URL
@@ -165,7 +167,7 @@ function CurrentSong() {
   if (!song) return <p>Song not found.</p>;
 
   return (
-    <div>
+    <div class="current-song-page">
       <h1>{song.title}</h1>
       <p><strong>Singer:</strong> {song.singers?.name || 'Unknown'}</p>
       <p><strong>Writer:</strong> {song.writers?.name || 'Unknown'}</p>
