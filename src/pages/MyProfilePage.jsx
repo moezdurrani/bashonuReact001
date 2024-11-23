@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { Link } from 'react-router-dom';
-import './MyProfilePage.css';
+import React, { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { Link } from "react-router-dom";
+import "./MyProfilePage.css";
 
 function MyProfile({ session }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [username, setUsername] = useState('');
+  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
   const [editingUsername, setEditingUsername] = useState(false);
-  const [newUsername, setNewUsername] = useState('');
+  const [newUsername, setNewUsername] = useState("");
   const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
@@ -20,23 +20,23 @@ function MyProfile({ session }) {
         setUser(session.user);
 
         const { data: userProfile, error: userProfileError } = await supabase
-          .from('user_profiles')
-          .select('username, profile_image_url')
-          .eq('id', session.user.id)
+          .from("user_profiles")
+          .select("username, profile_image_url")
+          .eq("id", session.user.id)
           .single();
 
         if (userProfileError) {
-          console.error('Error fetching username:', userProfileError.message);
+          console.error("Error fetching username:", userProfileError.message);
         } else {
-          setUsername(userProfile?.username || 'No username set');
+          setUsername(userProfile?.username || "No username set");
 
           if (userProfile.profile_image_url) {
             const { data: publicUrlData } = supabase.storage
-              .from('user-images')
+              .from("user-images")
               .getPublicUrl(userProfile.profile_image_url);
             setProfileImage(publicUrlData.publicUrl);
           } else {
-            setProfileImage('https://via.placeholder.com/150');
+            setProfileImage("https://via.placeholder.com/150");
           }
         }
       }
@@ -49,38 +49,38 @@ function MyProfile({ session }) {
   const handleEditUsername = async () => {
     try {
       const { error } = await supabase
-        .from('user_profiles')
+        .from("user_profiles")
         .update({ username: newUsername })
-        .eq('id', user.id);
+        .eq("id", user.id);
 
       if (error) throw error;
 
       setUsername(newUsername);
-      setNewUsername('');
+      setNewUsername("");
       setEditingUsername(false);
-      setMessage('Username updated successfully!');
+      setMessage("Username updated successfully!");
     } catch (error) {
-      console.error('Error updating username:', error.message);
-      setMessage('Error updating username.');
+      console.error("Error updating username:", error.message);
+      setMessage("Error updating username.");
     }
   };
 
   const handleUploadProfileImage = async (event) => {
     const file = event.target.files[0];
     if (!file) {
-      setMessage('Please select a file to upload.');
+      setMessage("Please select a file to upload.");
       return;
     }
 
     try {
       const filePath = `${session.user.id}/profile.jpg`;
 
-      await supabase.storage.from('user-images').remove([filePath]);
+      await supabase.storage.from("user-images").remove([filePath]);
 
       const { error: uploadError } = await supabase.storage
-        .from('user-images')
+        .from("user-images")
         .upload(filePath, file, {
-          cacheControl: '3600',
+          cacheControl: "3600",
           upsert: true,
           contentType: file.type,
         });
@@ -90,23 +90,23 @@ function MyProfile({ session }) {
       }
 
       const { error: updateError } = await supabase
-        .from('user_profiles')
+        .from("user_profiles")
         .update({ profile_image_url: filePath })
-        .eq('id', session.user.id);
+        .eq("id", session.user.id);
 
       if (updateError) {
         throw updateError;
       }
 
       const { data: imageData } = supabase.storage
-        .from('user-images')
+        .from("user-images")
         .getPublicUrl(filePath);
 
       setProfileImage(`${imageData.publicUrl}?t=${new Date().getTime()}`);
-      setMessage('Profile image uploaded successfully!');
+      setMessage("Profile image uploaded successfully!");
     } catch (error) {
-      console.error('Error uploading profile image:', error.message);
-      setMessage('Error uploading profile image. Please try again.');
+      console.error("Error uploading profile image:", error.message);
+      setMessage("Error uploading profile image. Please try again.");
     }
   };
 
@@ -115,33 +115,33 @@ function MyProfile({ session }) {
       const filePath = `${session.user.id}/profile.jpg`;
 
       const { error: deleteError } = await supabase.storage
-        .from('user-images')
+        .from("user-images")
         .remove([filePath]);
 
       if (deleteError) throw deleteError;
 
       const { error: updateError } = await supabase
-        .from('user_profiles')
+        .from("user_profiles")
         .update({ profile_image_url: null })
-        .eq('id', session.user.id);
+        .eq("id", session.user.id);
 
       if (updateError) throw updateError;
 
-      setProfileImage('https://via.placeholder.com/150');
-      setMessage('Profile image deleted successfully.');
+      setProfileImage("https://via.placeholder.com/150");
+      setMessage("Profile image deleted successfully.");
     } catch (error) {
-      console.error('Error deleting profile image:', error.message);
-      setMessage('Error deleting profile image.');
+      console.error("Error deleting profile image:", error.message);
+      setMessage("Error deleting profile image.");
     }
   };
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      setMessage('Error logging out: ' + error.message);
+      setMessage("Error logging out: " + error.message);
     } else {
       setUser(null);
-      setMessage('Successfully logged out!');
+      setMessage("Successfully logged out!");
       window.location.reload();
     }
   };
@@ -153,7 +153,12 @@ function MyProfile({ session }) {
       {!user ? (
         <div className="login-container">
           <h1>Login</h1>
-          <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
+          <Auth
+            supabaseClient={supabase}
+            appearance={{ theme: ThemeSupa }}
+            providers={[]} // Remove all third-party providers
+            onlyThirdPartyProviders={false} // Ensure email login is enabled
+          />
         </div>
       ) : (
         <div>
@@ -173,14 +178,12 @@ function MyProfile({ session }) {
               <button onClick={() => setEditingUsername(false)}>Cancel</button>
             </div>
           ) : (
-            <button onClick={() => setEditingUsername(true)}>Edit Username</button>
+            <button onClick={() => setEditingUsername(true)}>
+              Edit Username
+            </button>
           )}
           <div className="profile-container">
-            <img
-              src={profileImage}
-              alt="Profile"
-              className="profile-image"
-            />
+            <img src={profileImage} alt="Profile" className="profile-image" />
             <div>
               <label htmlFor="profile-image-upload">
                 Upload New Profile Image:
