@@ -4,15 +4,23 @@ import { supabase } from "../supabaseClient";
 import "./CurrentSong.css";
 
 function CurrentSong() {
-  const { id } = useParams(); // Get the song ID from the URL
-  const navigate = useNavigate(); // Add navigate hook
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState("");
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
-  const [lyricsType, setLyricsType] = useState("khowar"); // Default to Khowar lyrics
+  const [lyricsType, setLyricsType] = useState("khowar");
+  const [editing, setEditing] = useState(false);
+
+  // State for editing form
+  const [title, setTitle] = useState("");
+  const [khowarLyrics, setKhowarLyrics] = useState("");
+  const [englishLyrics, setEnglishLyrics] = useState("");
+  const [singer, setSinger] = useState("");
+  const [writer, setWriter] = useState("");
 
   const fetchSong = async () => {
     setLoading(true);
@@ -24,7 +32,6 @@ function CurrentSong() {
       const user = session?.user;
       setUserId(user?.id);
 
-      // Fetch song details with proper relationships
       const { data: songData, error } = await supabase
         .from("songs")
         .select(
@@ -35,6 +42,7 @@ function CurrentSong() {
           english_lyrics,
           likes,
           comments,
+          user_id,
           singers(name),
           writers(name),
           user_profiles(username)
@@ -48,8 +56,12 @@ function CurrentSong() {
         setSong(null);
       } else {
         setSong(songData);
+        setTitle(songData.title);
+        setKhowarLyrics(songData.khowar_lyrics);
+        setEnglishLyrics(songData.english_lyrics);
+        setSinger(songData.singers?.name || "");
+        setWriter(songData.writers?.name || "");
 
-        // Check if the user has already liked the song
         const { data: likeData } = await supabase
           .from("song_likes")
           .select("id")
@@ -57,7 +69,7 @@ function CurrentSong() {
           .eq("song_id", id)
           .single();
 
-        setLiked(!!likeData); // Set liked to true if likeData exists
+        setLiked(!!likeData);
       }
     } catch (error) {
       console.error("Unexpected error:", error.message);
@@ -66,10 +78,40 @@ function CurrentSong() {
     setLoading(false);
   };
 
+  const handleEdit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await supabase
+        .from("songs")
+        .update({
+          title,
+          khowar_lyrics: khowarLyrics,
+          english_lyrics: englishLyrics,
+          singers: { name: singer },
+          writers: { name: writer },
+        })
+        .eq("id", id);
+
+      setSong({
+        ...song,
+        title,
+        khowar_lyrics: khowarLyrics,
+        english_lyrics: englishLyrics,
+        singers: { name: singer },
+        writers: { name: writer },
+      });
+      setEditing(false); // Exit editing mode
+      setMessage("Song updated successfully!");
+    } catch (error) {
+      setMessage("Error updating song: " + error.message);
+    }
+  };
+
   const handleTextareaInput = (event) => {
     const textarea = event.target;
-    textarea.style.height = "auto"; // Reset height to auto to calculate the correct scrollHeight
-    textarea.style.height = `${textarea.scrollHeight}px`; // Set height to scrollHeight
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
   const handleLikeToggle = async () => {
@@ -79,59 +121,26 @@ function CurrentSong() {
     }
 
     try {
+      const updatedLikes = liked
+        ? Math.max((song.likes || 1) - 1, 0)
+        : (song.likes || 0) + 1;
+
       if (liked) {
-        // Unlike the song
-        const { error: deleteError } = await supabase
+        await supabase
           .from("song_likes")
           .delete()
           .eq("user_id", userId)
           .eq("song_id", id);
-
-        if (deleteError) {
-          throw deleteError;
-        }
-
-        // Decrement the song's like count
-        const updatedLikes = Math.max((song.likes || 1) - 1, 0);
-        const { error: updateError } = await supabase
-          .from("songs")
-          .update({ likes: updatedLikes })
-          .eq("id", id);
-
-        if (updateError) {
-          throw updateError;
-        }
-
-        setLiked(false);
-        setSong({ ...song, likes: updatedLikes });
       } else {
-        // Like the song
-        const { error: insertError } = await supabase
+        await supabase
           .from("song_likes")
           .insert({ user_id: userId, song_id: id });
-
-        if (insertError) {
-          if (insertError.message.includes("duplicate key value")) {
-            setMessage("You have already liked this song.");
-            return;
-          }
-          throw insertError;
-        }
-
-        // Increment the song's like count
-        const updatedLikes = (song.likes || 0) + 1;
-        const { error: updateError } = await supabase
-          .from("songs")
-          .update({ likes: updatedLikes })
-          .eq("id", id);
-
-        if (updateError) {
-          throw updateError;
-        }
-
-        setLiked(true);
-        setSong({ ...song, likes: updatedLikes });
       }
+
+      await supabase.from("songs").update({ likes: updatedLikes }).eq("id", id);
+
+      setLiked(!liked);
+      setSong({ ...song, likes: updatedLikes });
     } catch (error) {
       setMessage("Error updating like status: " + error.message);
     }
@@ -179,7 +188,6 @@ function CurrentSong() {
     <div className="current-song-page">
       <h1>{song.title}</h1>
 
-      {/* Lyrics Toggle Buttons */}
       <div className="lyrics-toggle-buttons">
         <button
           onClick={() => setLyricsType("khowar")}
@@ -195,7 +203,61 @@ function CurrentSong() {
         </button>
       </div>
 
-      {/* Display Lyrics Based on Selection */}
+      {editing ? (
+        <form className="edit-song-form" onSubmit={handleEdit}>
+          <label htmlFor="title">Title:</label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <label htmlFor="singer">Singer:</label>
+          <input
+            type="text"
+            id="singer"
+            value={singer}
+            onChange={(e) => setSinger(e.target.value)}
+            required
+          />
+          <label htmlFor="writer">Writer:</label>
+          <input
+            type="text"
+            id="writer"
+            value={writer}
+            onChange={(e) => setWriter(e.target.value)}
+            required
+          />
+          <label htmlFor="khowarLyrics">Khowar Lyrics:</label>
+          <textarea
+            id="khowarLyrics"
+            value={khowarLyrics}
+            onChange={(e) => setKhowarLyrics(e.target.value)}
+            required
+          />
+          <label htmlFor="englishLyrics">English Lyrics:</label>
+          <textarea
+            id="englishLyrics"
+            value={englishLyrics}
+            onChange={(e) => setEnglishLyrics(e.target.value)}
+            required
+          />
+          <button type="submit">Save Changes</button>
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={() => setEditing(false)}
+          >
+            Cancel
+          </button>
+        </form>
+      ) : (
+        song.user_id === userId && (
+          <button onClick={() => setEditing(true)}>Edit Song</button>
+        )
+      )}
+
       <div className="lyrics-section">
         {lyricsType === "khowar" && (
           <div className="lyrics khowar-lyrics">
@@ -220,33 +282,22 @@ function CurrentSong() {
       <p>
         <strong>Posted by:</strong>{" "}
         <span
-          onClick={() =>
-            song?.user_profiles?.username
-              ? navigate(`/user/${song.user_profiles.username}`)
-              : console.log("Username not found")
-          }
+          onClick={() => navigate(`/user/${song.user_profiles?.username}`)}
           className="poster-link"
         >
           {song.user_profiles?.username || "Unknown"}
         </span>
       </p>
 
-      {/* Other Details */}
-      {/* Other Details */}
-      <div className="song-details">
-        {/* Likes Section */}
-        {/* Likes Section */}
-        <div className="likes-container">
-          <i
-            className={`fa-heart ${liked ? "fas liked" : "far"}`}
-            onClick={handleLikeToggle}
-            style={{ cursor: "pointer", fontSize: "1.5rem" }}
-          ></i>
-          <span className="likes-count">{song.likes || 0}</span>
-        </div>
+      <div className="likes-container">
+        <i
+          className={`fa-heart ${liked ? "fas liked" : "far"}`}
+          onClick={handleLikeToggle}
+          style={{ cursor: "pointer", fontSize: "1.5rem" }}
+        ></i>
+        <span>{song.likes || 0}</span>
       </div>
 
-      {/* Comment Section */}
       <div>
         <h2>Comments</h2>
         <ul>
