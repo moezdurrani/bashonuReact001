@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap");
 
 body {
   margin: 0;
-  font-family: "Comfortaa",Arial, sans-serif;
-  background-color: rgb(242,244,247);
+  font-family: "Comfortaa", Arial, sans-serif;
+  background-color: rgb(242, 244, 247);
   color: #ffffff;
 }
 
@@ -124,7 +124,6 @@ li a {
   }
 }
 
-
 ul {
   list-style-type: none;
   padding: 0;
@@ -134,7 +133,7 @@ ul {
 
 ul li {
   margin: 0.5rem 0;
-  padding: 0rem 1rem; 
+  padding: 0rem 1rem;
   background: rgb(255, 255, 255);
   border: 0.5px solid #ddd;
   border-radius: 8px;
@@ -142,34 +141,30 @@ ul li {
   text-align: left; /* Align content inside the song item to the left */
   overflow-x: auto; /* Enable horizontal scrolling if content overflows */
   overflow-y: hidden;
-  white-space: nowrap; 
+  white-space: nowrap;
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; /* Smooth transition */
 }
 
 li:hover {
   background-color: rgb(242, 242, 242); /* Subtle background color change */
-  transform: scale(1.0);
+  transform: scale(1);
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
-
 
 ul li h2 {
   margin: 0; /* Removed bottom margin */
   font-size: 1.1rem; /* Increase font size */
   font-weight: bold;
-  color: #494949; 
+  color: #494949;
 }
 
-
 ul li p {
-  margin: 0.0rem 0 0; /* Adds slight spacing between lines */
+  margin: 0rem 0 0; /* Adds slight spacing between lines */
   font-size: 0.9rem; /* Adjust font size */
-  color: #727272;  
+  color: #727272;
   overflow-x: auto; /* Ensure text can scroll horizontally */
   white-space: nowrap; /* Keep text on one line */
 }
-
-
 
 @media (max-width: 600px) {
   ul {
@@ -178,5 +173,26 @@ ul li p {
 
   li p {
     font-size: 0.85rem; /* Adjusts text size for smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block; /* Ensure toggle is visible on smaller screens */
+    position: absolute; /* Position relative to the header */
+    right: 1rem; /* Move it away from the left edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust centering */
+    font-size: 2.5rem; /* Ensure a good size on mobile */
+    color: #333; /* Icon color */
+  }
+
+  .nav-links {
+    display: none; /* Default hidden */
+  }
+
+  .nav-links.open {
+    display: flex; /* Show menu when open */
+    flex-direction: column; /* Stack links vertically */
   }
 }
