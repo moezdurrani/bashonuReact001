@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500&display=swap');
+
+
+
+.create-song-page {
+    padding: 2rem;
+    padding-top: 0.5rem;
+    font-family: "Comfortaa",Arial, sans-serif;
+    background-color: rgb(255, 255, 255);
+    color: #333;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .create-song-page h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: rgb(40, 100, 246);
+  }
+  
+  .create-song-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .create-song-page input,
+  .create-song-page textarea {
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgb(242, 244, 247);
+  }
+  
+  .create-song-page textarea { 
+    resize: none;
+    height: 220px;
+    text-align: center;
+  }
+
+  .create-song-page .urdu-lyrics-input {
+    font-family: 'Noto Nastaliq Urdu', serif !important; 
+  }
+
+  .create-song-page .urdu-lyrics-input::placeholder {
+    font-family: "Comfortaa",Arial, sans-serif;
+  }
+  
+  
+  .urdu-lyrics-input:focus {
+    outline: none;
+    border-color: rgb(40, 100, 246); /* Highlight border on focus */
+    background-color: #fff;
+  }
+
+  .create-song-page button {
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(40, 100, 246);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  .create-song-page button:hover {
+    background-color: rgb(30, 80, 200);
+  }
+  
+  .create-song-page p {
+    margin-top: 1rem;
+    text-align: center;
+    color: green;
+    font-weight: bold;
+  }
+  

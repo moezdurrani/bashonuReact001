@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import './CreateSong.css';
 
 function CreateSong() {
   const [title, setTitle] = useState('');
@@ -104,7 +105,7 @@ function CreateSong() {
   };
 
   return (
-    <div>
+    <div className="create-song-page">
       <h1>Create a New Song</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -129,11 +130,13 @@ function CreateSong() {
           required
         />
         <textarea
-          placeholder="Khowar Lyrics"
+          className="urdu-lyrics-input"
+          placeholder="Khowar Lyrics (Urdu)"
           value={khowarLyrics}
           onChange={(e) => setKhowarLyrics(e.target.value)}
           required
         />
+
         <textarea
           placeholder="English Lyrics"
           value={englishLyrics}
